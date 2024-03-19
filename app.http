@@ -1,0 +1,173 @@
+###
+GET http://localhost:8000/api/users/getAllUsers
+
+
+###
+GET http://localhost:8000/api/users/getAllUsers/employees
+
+###
+GET http://localhost:8000/api/users/getUserByID/7
+###//add an employee
+POST http://localhost:8000/api/users/addNewEmployee
+Content-Type: application/json
+
+{
+    "FirstName": "bob",
+    "LastName": "job",
+    "Location": "New York",
+    "BirthDate": "1998-01-01",
+    "Contact": "1234567670",
+    "Gender": "female",
+    "admin": false,
+    "PositionID": 6,
+    "ScheduleID": 6,
+    "PhotoURL": "https://example.com/photo.jpg",
+    "Email": "ob@example.com",
+    "Password": "password3",
+    "BankName": "Example Bank",
+    "BankBranch": "New York Branch",
+    "AccountNumber": "1234567780",
+    "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at fermentum diam."
+}
+
+###
+PUT http://localhost:8000/api/users/UpdateEmployeeByID/1
+Content-Type: application/json
+
+{
+    "FirstName": "Tony",
+    "LastName": "Doe",
+    "Location": "New York",
+    "BirthDate": "1990-01-01T00:00:00.000Z",
+    "Contact": "1234567890",
+    "Gender": "Male",
+    "admin": true,
+    "PositionID": 1,
+    "ScheduleID": 1,
+    "PhotoURL": "https://example.com/photo.jpg",
+    "Email": "john.doe@example.com",
+    "Password": "password123",
+    "BankName": "Example Bank",
+    "BankBranch": "New York Branch",
+    "AccountNumber": "1234567890",
+    "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at fermentum diam."
+  },
+###//add an employee
+POST http://localhost:8000/api/users/login
+Content-Type: application/json
+
+{
+  "Email": "john.doe@example.com",
+  "Password": ""
+}
+
+
+PUT http://localhost:8000/api/UpdateEmployeeByID/
+Content-Type: application/json
+
+{
+
+}
+
+
+
+###
+DELETE  http://localhost:8000/api/employees/10
+
+
+
+//cashadvance
+###
+GET http://localhost:8000/api/cash
+### 
+GET http://localhost:8000/api/cashadvances
+
+
+### Deleting a single user
+DELETE  http://localhost:5000/api//cashadvances/
+
+### 
+POST http://localhost:5000/api//cashadvances/add
+content-Type: application/json
+
+# {
+  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
+  # "content": "This is a new post by Mike.",
+  # "likes": 18,e
+  # "comments": 10
+# }
+
+
+
+//deductions
+
+
+
+###
+GET http://localhost:8000/api/position/1
+### 
+GET http://localhost:8000/api/position
+
+
+### Deleting a single user
+DELETE  http://localhost:8000/api/position/7
+
+### 
+POST http://localhost:8000/api/position
+content-Type: application/json
+
+ {
+  
+
+ 
+}
+
+
+
+//schedule
+
+###
+GET http://localhost:8000/api/schedule/all
+### 
+GET http://localhost:8000/api/schedule
+
+
+### Deleting a single user
+DELETE  http://localhost:5000/api/
+
+### 
+POST http://localhost:5000/api/
+content-Type: application/json
+
+# {
+  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
+  # "content": "This is a new post by Mike.",
+  # "likes": 18,e
+  # "comments": 10
+# }
+
+
+
+//overtime
+
+
+GET http://localhost:8000/api/
+### 
+GET http://localhost:8000/api/
+
+
+### Deleting a single user
+DELETE  http://localhost:8000/api/
+
+### 
+POST http://localhost:8000/api/
+content-Type: application/json
+
+# {
+  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
+  # "content": "This is a new post by Mike.",
+  # "likes": 18,e
+  # "comments": 10
+# }
+
+
