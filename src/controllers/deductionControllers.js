@@ -1,7 +1,6 @@
-import { send } from "vite"
-import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helper.functions.js"
-import { createNewDeductionService, getAllDeductionService } from "../services/deductionsServices.js"
-import { getOneEmployeeService } from "../services/userService.js"
+import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helperFunctions.js"
+import { createNewDeductionService, getAllDeductionService } from "../services/deductionServices.js"
+// import { getOneEmployeeService } from "../services/userService.js"
 
 
 
@@ -36,7 +35,7 @@ export const createNewDeduction=async(req,res)=>{
     }
 }
 
-export const getAlllDeductions=async(req,res)=>{
+export const getAllDeductions=async(req,res)=>{
     try {
         const result =await getAllDeductionService()
         if(result.length){

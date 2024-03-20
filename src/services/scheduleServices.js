@@ -1,49 +1,76 @@
 
 import mssql from 'mssql'
-import { poolRequest } from '../utils/sqlDbConnect.js'
+import { poolRequest } from '../utils/dbConnect.js'
 import * as uuid from 'uuid'
-import { schedule } from 'node-cron'
+// import { schedule } from 'node-cron'
 
 
-
-export const  createNewScheduleService=async(schedule)=>{
+export const createNewScheduleService = async (schedule) => {
     try {
-            const schedule_id=uuid.v4()
-            const result =await poolRequest()
-            .input('schedule_id', mssql.VarChar,schedule_id)
-            .input('in_time',mssql.VarChar,schedule.in_time)
-            .input('out_time',mssql.VarChar, schedule.out_time)
-            .input('schedule_description',mssql.VarChar,schedule.schedule_description)
-            .query(`INSERT INTO schedule (schedule_id,in_time,out_time,schedule_description)
-                    VALUES (@schedule_id, @in_time,@out_time,@schedule_description)
-            `)
-            return result
-        
+        const scheduleID = uuid.v4();
+        const result = await poolRequest()
+            .input('InTime', mssql.Time, schedule.in_time) 
+            .input('OutTime', mssql.Time, schedule.out_time) 
+            .query(`
+                INSERT INTO Schedule ( InTime, OutTime)
+                VALUES ( @InTime, @OutTime)
+            `);
+        return result;
     } catch (error) {
-        return error 
+        return error;
+    }
+}
+
+export const getAllScheduleService = async () => {
+    try {
+        const result = await poolRequest()
+            .query(`SELECT * FROM Schedule`);
+        return result.recordset;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const getAShiftByDescriptionService = async (scheduleDescription) => {
+    try {
+        const result = await poolRequest()
+            .input('ScheduleDescription', mssql.VarChar, scheduleDescription) 
+            .query(`SELECT * FROM Schedule WHERE ScheduleDescription = @ScheduleDescription`); 
+    } catch (error) {
+        return error;
     }
 }
 
 
-export const getAllScheduleService=async()=>{
+export const updateScheduleService = async (updatedSchedule) => {
     try {
-            const result=await poolRequest()
-            .query(`SELECT * FROM schedule`)
-            return result.recordset
+        const result = await poolRequest()
+            .input('ScheduleID', mssql.VarChar, updatedSchedule.scheduleID)
+            .input('InTime', mssql.Time, updatedSchedule.in_time)
+            .input('OutTime', mssql.Time, updatedSchedule.out_time)
+            .query(`
+                UPDATE Schedule
+                SET InTime = @InTime, OutTime = @OutTime
+                WHERE ScheduleID = @ScheduleID
+            `);
+
+        return result;
     } catch (error) {
-        return error 
+        throw error;
     }
-}
+};
 
-
-export const getAShiftByDescriptionService=async(schedule_description)=>{
+export const deleteScheduleService = async (scheduleID) => {
     try {
-            const result =await poolRequest()
-            .input('schedule_description', mssql.VarChar,schedule_description)
-            .query(`SELECT * FROM schedule WHERE schedule_description=@schedule_description`)
-            return result.recordset
-        
+        const result = await poolRequest()
+            .input('ScheduleID', mssql.VarChar, scheduleID)
+            .query(`
+                DELETE FROM Schedule
+                WHERE ScheduleID = @ScheduleID
+            `);
+
+        return result;
     } catch (error) {
-        return error
+        throw error;
     }
-}
+};

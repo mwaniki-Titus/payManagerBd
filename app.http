@@ -12,18 +12,18 @@ POST http://localhost:8000/api/users/addNewEmployee
 Content-Type: application/json
 
 {
-    "FirstName": "bob",
-    "LastName": "job",
+    "FirstName": "pop",
+    "LastName": "pob",
     "Location": "New York",
     "BirthDate": "1998-01-01",
-    "Contact": "1234567670",
-    "Gender": "female",
+    "Contact": "1234564508",
+    "Gender": "male",
     "admin": false,
-    "PositionID": 6,
-    "ScheduleID": 6,
+    "PositionID": 7,
+    "ScheduleID": 7,
     "PhotoURL": "https://example.com/photo.jpg",
-    "Email": "ob@example.com",
-    "Password": "password3",
+    "Email": "poop@example.com",
+    "Password": "password8",
     "BankName": "Example Bank",
     "BankBranch": "New York Branch",
     "AccountNumber": "1234567780",
@@ -41,7 +41,7 @@ Content-Type: application/json
     "BirthDate": "1990-01-01T00:00:00.000Z",
     "Contact": "1234567890",
     "Gender": "Male",
-    "admin": true,
+    "admin": false,
     "PositionID": 1,
     "ScheduleID": 1,
     "PhotoURL": "https://example.com/photo.jpg",
@@ -69,16 +69,39 @@ Content-Type: application/json
 
 }
 
+/////////---------------position--------------------------------------------------------------------////////
+### 
+GET  http://localhost:8000/api/position
+
+###
+POST http://localhost:8000/api/position/addPosition
+Content-Type: application/json
+
+{
+  "PositionDescription": "Software Engineer",
+  "GrossSalary": 7000
+}
 
 
 ###
-DELETE  http://localhost:8000/api/employees/10
+PATCH  http://localhost:8000/api/position/32
+Content-Type: application/json
+
+{
+  "PositionDescription": "Software Engineer",
+  "GrossSalary": 7000
+}
 
 
 
-//cashadvance
 ###
-GET http://localhost:8000/api/cash
+GET   http://localhost:8000/api/position/2
+
+
+
+////------------------------------cashadvance-------------------------------------------/////////
+###
+GET http://localhost:8000/api/
 ### 
 GET http://localhost:8000/api/cashadvances
 
@@ -99,7 +122,7 @@ content-Type: application/json
 
 
 
-//deductions
+//---------------------------------deductions-------------------------------------------------/////
 
 
 
@@ -124,27 +147,34 @@ content-Type: application/json
 
 
 
-//schedule
+//----------------------------------------schedule---------------------------------//////
 
 ###
 GET http://localhost:8000/api/schedule/all
+
 ### 
-GET http://localhost:8000/api/schedule
+POST  http://localhost:8000/api/schedule
+
+  {
+    "InTime": "1971-01-01T07:00:00.000Z",
+    "OutTime": "1971-01-01T16:00:00.000Z",
+    "CreatedAt": "2025-05-19T16:44:59.967Z",
+  }
+
+### 
+PUT   http://localhost:8000/api/schedule/20
+
+  {
+    "InTime": "1970-01-01T07:00:00.000Z",
+    "OutTime": "1970-01-01T16:00:00.000Z",
+    "CreatedAt": "2025-03-19T16:43:59.967Z",
+  }
 
 
 ### Deleting a single user
-DELETE  http://localhost:5000/api/
+DELETE  http://localhost:8000/api/schedule/1
 
 ### 
-POST http://localhost:5000/api/
-content-Type: application/json
-
-# {
-  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
-  # "content": "This is a new post by Mike.",
-  # "likes": 18,e
-  # "comments": 10
-# }
 
 
 

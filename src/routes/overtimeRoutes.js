@@ -1,6 +1,6 @@
 
 import {Router} from "express"
-import { createNewOvertime, getAllOvertimeRecord } from "../controllers/overtime.controller.js"
+import { createNewOvertime, getAllOvertimeRecord } from "../controllers/overtimeControllers.js"
 
 
 

@@ -1,114 +1,94 @@
-
-
-import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helper.functions.js"
-import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, getPositionByNameService } from "../services/positionsService.js"
-import logger from "../utils/logger.js"
-
+import { sendBadRequest, sendCreated, sendNotFound, sendServerError } from "../helpers/helperFunctions.js";
+import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, getPositionByNameService } from "../services/positionServices.js";
+import logger from "../utils/logger.js";
 
 
 
-
-
-export const createNewPosition=async(req, res)=>{
+export const createNewPosition = async (req, res) => {
     try {
-           const positionDetails={
-               position_description:req.body.position_description,
-               gross_salary:req.body.gross_salary
-           } 
+        const positionDescription = req.body.PositionDescription;
+        const grossSalary = req.body.GrossSalary;
 
-           const position=await getPositionByNameService(positionDetails.position_description)
-           if(position.length>0){
-              sendBadRequest(res,`${positionDetails.position_description} position already exists `)
-           }
-           else{
-            if(positionDetails.position_description=='' || positionDetails.gross_salary==''){
-                sendBadRequest(res,'input for all fields is required')                         
-              
-           }
-           else{
-                const response=await createNewPositionService(positionDetails)
-                logger.info(response)
-                if(response.rowsAffected>0){
-                    sendCreated(res,`${req.body.position_description} created successfully`)
-                }
-              
-           }
-
-           }     
         
-    } catch (error) {
-        sendServerError(res,error)
-    }
-}
-
-export const getAllPositions=async(req,res)=>{
-    try {
-         const result=await getAllPositionsService()
-
-         if(result.length>0){
-            return res.status(200).json(result)
-         }
-         else{
-            sendNotFound(res, 'no records of positions found')
-         }
-            
-        
-    } catch (error) {
-        sendServerError(res,error.messsage)
-        
-    }
-}
-
-
-export const getOnePosition=async(req,res)=>{
-    try {
-        const  position_id=req.params.position_id
-        const position=await getPositionByIdService(position_id);
-
-        if(position.length){
-            
-            console.log("position", position);
-            return res.status(200).json(position)
-
+        if (!positionDescription || !grossSalary || positionDescription.trim() === '' || isNaN(grossSalary)) {
+            return sendBadRequest(res, 'Input for all fields is required and GrossSalary must be a valid number');
         }
-        else{
-            sendNotFound(res,'position not found')
+
+       
+        const positionDetails = {
+            positionDescription: positionDescription,
+            grossSalary: grossSalary
+        };
+
+        const response = await createNewPositionService(positionDetails);
+
+        
+        if (response.rowsAffected > 0) {
+            return sendCreated(res, `${positionDescription} created successfully`);
+        }
+    } catch (error) {
+        return sendServerError(res, error);
+    }
+};
+
+export const getAllPositions = async (req, res) => {
+    try {
+        const result = await getAllPositionsService();
+        if (result.length > 0) {
+            return res.status(200).json(result);
+        } else {
+            sendNotFound(res, 'No records of positions found');
+        }
+    } catch (error) {
+        sendServerError(res, error.message);
+    }
+};
+
+export const getOnePosition = async (req, res) => {
+    try {
+        const positionId = req.params.position_id;
+        const position = await getPositionByIdService(positionId);
+
+        if (position.length) {
+            return res.status(200).json(position);
+        } else {
+            sendNotFound(res, 'Position not found');
+        }
+    } catch (error) {
+        sendServerError(res, error.message);
+    }
+};
+
+export const editPosition = async (req, res) => {
+    try {
+        const positionId = req.params.position_id;
+        const { positionDescription, grossSalary } = req.body;
+
+        console.log(positionId)
+        if (!positionDescription || !grossSalary) {
+            return sendBadRequest(res, 'Input for all fields is required');
         }
 
         
-    } catch (error) {
-        sendServerError(res,error.message)
-    }
-}
+        const position = await getPositionByIdService(positionId);
+        if (position.length === 0) {
+            return sendNotFound(res, 'Position not found');
+        }
 
+        const updatedPositionDetails = {
+            positionDescription,
+            grossSalary
+        };
 
-export const editPosition=async(req, res)=>{
-    try {
-           
-         const  position_id=req.params.position_id
-            let editedPositionDetails={
-                position_description:req.body.position_description,
-                gross_salary:req.body.gross_salary
-            }
-
-
-            console.log("position id",position_id)
-            const position=await getPositionByIdService(position_id);
-            console.log("position", position)
-
-            if(position.length>0){
-                const response=await editPositionService(position_id,editedPositionDetails)
-                console.log(response)
-                if(response.rowsAffected>0){
-                    sendSuccess(res,"position updated successfully")
-                }
-               
-            }
-            else{
-                sendNotFound(res,'Cannot edit a non existing position')
-            }     
         
+        const response = await editPositionService(positionId, updatedPositionDetails);
+        
+        if (response.rowsAffected > 0) {
+            return sendSuccess(res, 'Position updated successfully');
+        } else {
+            return sendServerError(res, 'Failed to update position');
+        }
     } catch (error) {
-        sendServerError(res,error.messsage)
+        return sendServerError(res, error.message);
     }
-}
+};

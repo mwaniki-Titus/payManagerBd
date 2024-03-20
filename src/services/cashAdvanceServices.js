@@ -1,6 +1,6 @@
 
 import mssql from 'mssql'
-import { poolRequest } from '../utils/sqlDbConnect.js'
+import { poolRequest } from '../utils/dbConnect.js'
 import  * as uuid from 'uuid'
 
 

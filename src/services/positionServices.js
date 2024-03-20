@@ -1,80 +1,76 @@
 
 import mssql from 'mssql'
-import { poolRequest } from '../utils/sqlDbConnect.js'
+import { poolRequest } from '../utils/dbConnect.js'
 import  * as uuid from 'uuid'
 
 
 
-export const  createNewPositionService=async(position)=>{
+export const createNewPositionService = async (position) => {
     try {
-            const position_id=uuid.v4()
-            const result =await poolRequest()
-            .input('position_id', mssql.VarChar,position_id)
-            .input('position_description',mssql.VarChar,position.position_description)
-            .input('gross_salary',mssql.Int, position.gross_salary)
-            .query(`INSERT INTO position (position_id, position_description,gross_salary)
-                    VALUES (@position_id, @position_description,@gross_salary)
-            `)
-            return result
-        
+        const PositionID = uuid.v4(); 
+        const result = await poolRequest()
+            .input('PositionDescription', mssql.VarChar, position.positionDescription) 
+            .input('GrossSalary', mssql.Int, position.grossSalary) 
+            .query(`INSERT INTO Position ( PositionDescription, GrossSalary) 
+                    VALUES ( @PositionDescription, @GrossSalary)`);
+    
+        return result;
     } catch (error) {
-        return error 
+        return error;
     }
 }
 
-export  const getPositionByNameService=async(position_description)=>{
-    try {
-          const response=await poolRequest()
-          .input('position_description', mssql.VarChar,position_description)
-          .query(`SELECT * FROM position WHERE position_description=@position_description `)
 
-          return response.recordset
+export const getPositionByNameService = async (positionDescription) => {
+    try {
+        const response = await poolRequest()
+            .input('PositionDescription', mssql.VarChar, positionDescription)
+            .query(`SELECT * FROM Position WHERE PositionDescription = @PositionDescription`);
+        
+        return response.recordset;
     } catch (error) {
-        return error
+        return error;
     }
 }
 
-export const getAllPositionsService=async()=>{
+export const getAllPositionsService = async () => {
     try {
-         const result =await poolRequest()
-          .query(`SELECT * FROM position`)
-          return result.recordset
-
+        const result = await poolRequest()
+            .query(`SELECT * FROM Position`);
         
+        return result.recordset;
     } catch (error) {
-        return error
+        return error;
     }
 }
 
-export const getPositionByIdService=async(position_id)=>{
+export const getPositionByIdService = async (positionID) => {
     try {
-        const result =await poolRequest()
-        .input(`position_id`, mssql.VarChar,position_id)
-        .query(`SELECT * FROM position WHERE position_id=@position_id`)
-        return result.recordset
+        const result = await poolRequest()
+            .input('PositionID', mssql.VarChar, positionID)
+            .query(`SELECT * FROM Position WHERE PositionID = @PositionID`);
         
+        return result.recordset;
     } catch (error) {
-        return error
+        return error;
     }
 }
 
-export const  editPositionService=async(position_id,updatedPositionDetails)=>{
+export const editPositionService = async (positionID, updatedPositionDetails) => {
     try {
+        const { positionDescription, grossSalary } = updatedPositionDetails;
+        const result = await poolRequest()
+            .input('PositionID', mssql.VarChar, positionID)
+            .input('PositionDescription', mssql.VarChar, positionDescription)
+            .input('GrossSalary', mssql.VarChar, grossSalary)
+            .query(`
+                UPDATE Position
+                SET PositionDescription = @PositionDescription, GrossSalary = @GrossSalary
+                WHERE PositionID = @PositionID
+            `);
 
-         const{position_description,gross_salary}=updatedPositionDetails
-         const result=await poolRequest()
-         .input('position_id',mssql.VarChar,position_id)
-         .input('position_description',mssql.VarChar,position_description)
-         .input('gross_salary', mssql.VarChar,gross_salary)
-         .query(`
-                UPDATE position
-                SET position_description=@position_description , gross_salary=@gross_salary
-                WHERE position_id=@position_id
-         `)
-
-         return result 
-        
+        return result;
     } catch (error) {
-        return error
+        return error;
     }
 }

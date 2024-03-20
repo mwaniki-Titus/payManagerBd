@@ -1,7 +1,7 @@
 
-import { sendCreated, sendNotFound, sendServerError } from "../helpers/helper.functions.js"
-import { createCashAdvancesService, getAllCashAdvancesServices } from "../controllers/cashAdvanceControllers.js"
-import { getOneEmployeeService } from "../services/userService.js"
+import { sendCreated, sendNotFound, sendServerError } from "../helpers/helperFunctions.js"
+import { createCashAdvancesService, getAllCashAdvancesServices } from "../services/cashAdvanceServices.js"
+// import { getOneEmployeeService } from "../services/userServices.js"
 
 export const createCashAdvances=async(req,res)=>{
     try{
