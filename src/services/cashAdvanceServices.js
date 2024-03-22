@@ -1,52 +1,57 @@
 
-import mssql from 'mssql'
-import { poolRequest } from '../utils/dbConnect.js'
-import  * as uuid from 'uuid'
+import { poolRequest, sql} from '../utils/dbConnect.js';
 
-
-
-
-export const createCashAdvancesService = async (cashAdvances) => {
-    const { EmployeeID, amount, number_of_hours } = cashAdvances;
+export const createCashAdvanceService = async (employeeID, amount) => {
     try {
-        const cash_advance_id = uuid.v4();
         const response = await poolRequest()
-            .input('cash_advance_id', mssql.VarChar, cash_advance_id)
-            .input('EmployeeID', mssql.Int, EmployeeID) 
-            .input('amount', mssql.Decimal, amount)
-            .input('number_of_hours', mssql.Int, number_of_hours) 
+            .input('EmployeeID', sql.Int, employeeID)
+            .input('Amount', sql.Decimal(10, 2), amount)
             .query(`
-                INSERT INTO CashAdvances (CashAdvanceID, EmployeeID, NumberOfHours, CreatedOn, Amount)
-                VALUES (@cash_advance_id, @EmployeeID, @number_of_hours, GETDATE(), @amount)
+                INSERT INTO CashAdvances (EmployeeID, Amount)
+                VALUES (@EmployeeID, @Amount);
             `);
         return response;
     } catch (error) {
-        return error;
+        throw new Error(`Error creating cash advance: ${error.message}`);
     }
 };
 
-
-export const getAllCashAdvancesServices = async () => {
+// Function to retrieve all cash advances
+export const getAllCashAdvancesService = async () => {
     try {
         const response = await poolRequest()
-            .query(`SELECT CashAdvances.*, Employees.FirstName, Employees.LastName, Employees.EmployeeID, Employees.Contact
-                    FROM CashAdvances 
-                    JOIN Employees ON Employees.EmployeeID = CashAdvances.EmployeeID`);
+            .query(`
+                SELECT 
+                    CashAdvances.CashAdvanceID,
+                    CashAdvances.EmployeeID,
+                    CashAdvances.DateOfAdvance,
+                    CashAdvances.Amount,
+                    Employees.FirstName,
+                    Employees.LastName
+                FROM 
+                    CashAdvances
+                INNER JOIN 
+                    Employees ON CashAdvances.EmployeeID = Employees.EmployeeID
+            `);
         return response.recordset;
     } catch (error) {
-        return error;
+        throw new Error(`Error fetching cash advances: ${error.message}`);
     }
 };
 
 
-
-export const userLoginValidator=({email,password})=>{
-
-    const userSchema=joi.object({
-        
-        email:joi.string().required(),
-        password:joi.string().required(),
-           
-    })
-    return userSchema.validate({email,password});
-}
+export const updateCashAdvanceService = async (cashAdvanceID, amount) => {
+    try {
+        const response = await poolRequest()
+            .input('CashAdvanceID', sql.Int, cashAdvanceID)
+            .input('Amount', sql.Decimal(10, 2), amount)
+            .query(`
+                UPDATE CashAdvances
+                SET Amount = @Amount
+                WHERE CashAdvanceID = @CashAdvanceID;
+            `);
+        return response;
+    } catch (error) {
+        throw new Error(`Error updating cash advance: ${error.message}`);
+    }
+};

@@ -14,16 +14,16 @@ Content-Type: application/json
 
 {
     "FirstName": "John",
-    "LastName": "oe",
+    "LastName": "pop",
     "Location": "New York",
     "BirthDate": "1998-01-01",
     "Contact": "1234564508",
     "Gender": "male",
     "admin": false,
-    "PositionID": 3,
+    "PositionID": 2,
     "ScheduleID": 1,
     "PhotoURL": "https://example.com/photo.jpg",
-    "Email": "joe@example.com",
+    "Email": "pop@example.com",
     "Password": "password",
     "BankName": "Example Bank",
     "BankBranch": "New York Branch",
@@ -35,22 +35,23 @@ PUT http://localhost:8000/api/users/UpdateEmployeeByID/9
 Content-Type: application/json
 
 {
-    "FirstName": "John",
+    "EmployeeID": 1,
+    "FirstName": "Don",
     "LastName": "doe",
-    "Location": "New York",
-    "BirthDate": "1998-01-01",
+    "Location": "York",
+    "BirthDate": "1998-01-01T00:00:00.000Z",
     "Contact": "1234564508",
     "Gender": "male",
     "admin": false,
-    "PositionID": 2,
-    "ScheduleID": 2,
+    "PositionID": 1,
+    "ScheduleID": 1,
     "PhotoURL": "https://example.com/photo.jpg",
     "Email": "oe@example.com",
-    "Password": "password6",
+    "Password": "password",
     "BankName": "Example Bank",
     "BankBranch": "New York Branch",
     "AccountNumber": "1234567780",
-    "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at fermentum diam."
+    "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at ferme"
 }
   
 ###//add an employee
@@ -102,30 +103,32 @@ DELETE http://localhost:8000/api/position/3
 
 ////------------------------------cashadvance-------------------------------------------/////////
 ###
-GET http://localhost:8000/api/cashadvances
+GET http://localhost:8000/api/getAll/cashAdvance
 
 
 ### 
-POST http://localhost:5000/api//cashadvances/add
+POST http://localhost:8000/api/create/cashAdvance
 content-Type: application/json
 
 {
-    "EmployeeID": 123,  
-    "amount": 500,      
-    "number_of_hours": 8  
+  "employeeID": 12,
+  "amount": 5000.00
 }
 
 
+
+
 ### Deleting a single user
-DELETE  http://localhost:5000/api//cashadvances/
+DELETE  http://localhost:8000/api//cashadvances/
 
 ### 
-POST http://localhost:5000/api//cashadvances/add
+PUT  http://localhost:8000/api/edit/cashAdvance
 content-Type: application/json
 
 {
-
- }
+  "employeeID": 12,
+  "amount": 500.00
+}
 
 
 
@@ -137,11 +140,12 @@ content-Type: application/json
 GET http://localhost:8000/api/deductions
 ### 
 POST http://localhost:8000/api/deductions/add
+content-Type: application/json
 
 {
-    "description": "Medical Insurance",
-    "amount": 100.50,
-    "employeeID": 14
+    "description":"Medical Insurance",
+    "amount":100.50,
+    "employeeID":1
 }
 
 
@@ -169,7 +173,7 @@ GET http://localhost:8000/api/schedule/employee
 
 
 ###
-GET http://localhost:8000/api/schedule
+GET http://localhost:8000/api/schedule/1/employees
 
 
 
@@ -203,7 +207,7 @@ DELETE  http://localhost:8000/api/schedule/remove/6
 //-----------------------------overtime---------------------------------------------
 
 
-GET http://localhost:8000/apiovertime/getall
+GET http://localhost:8000/api/overtime/getall
 ### 
 GET http://localhost:8000/api/
 
@@ -212,12 +216,14 @@ GET http://localhost:8000/api/
 DELETE  http://localhost:8000/api/
 
 ### 
-POST http://localhost:8000/api/
-content-Type: application/json
+POST http://localhost:8000/api/overtime/add
+Content-Type: application/json
 
 {
-  
- }
+  "number_of_hours":5,
+  "rate_per_hours":15.5,
+  "employeeID":12
+}
 
 
 PUT  http://localhost:8000/api/
@@ -243,7 +249,7 @@ POST http://localhost:8000/api/attendance/addAttendance
 Content-Type: application/json
 
 {
-    "EmployeeID": 1,
+    "EmployeeID": 12,
     "Date": "2024-03-18",
     "ScheduleID": 1,
     "TimeIn": "08:00:AM",

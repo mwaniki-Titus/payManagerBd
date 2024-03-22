@@ -1,6 +1,6 @@
 
 import {Router} from "express"
-import { createNewOvertime, getAllOvertimeRecord } from "../controllers/overtimeControllers.js"
+import { createNewOvertimeController,  getAllOvertimeRecordController } from "../controllers/overtimeControllers.js"
 
 
 
@@ -9,8 +9,8 @@ import { createNewOvertime, getAllOvertimeRecord } from "../controllers/overtime
 
 const overtimeRouter=Router()
 
-overtimeRouter.get('/overtime/getall',getAllOvertimeRecord)
-overtimeRouter.post('/overtime',createNewOvertime)
+overtimeRouter.get('/overtime/getall',getAllOvertimeRecordController)
+overtimeRouter.post('/overtime/add',createNewOvertimeController)
 
 
 

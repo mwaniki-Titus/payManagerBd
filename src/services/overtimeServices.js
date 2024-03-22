@@ -1,9 +1,6 @@
-
-import sql from 'mssql'
-import * as uuid from 'uuid'
-import { poolRequest } from '../utils/dbConnect.js'
-
-
+import sql from 'mssql';
+import * as uuid from 'uuid';
+import { poolRequest } from '../utils/dbConnect.js';
 
 export const createNewOvertimeService = async (overtime) => {
     try {
@@ -22,22 +19,20 @@ export const createNewOvertimeService = async (overtime) => {
 
         return result;
     } catch (error) {
-        return error;
+        throw error;
     }
-}
-
+};
 
 export const getEmployeeOvertimeService = async (employeeId) => {
     try {
         const result = await poolRequest()
-            .query(`SELECT OvertimeID, OvertimeDate, HoursWorked
-                    FROM OvertimeRecords
-                    WHERE EmployeeID = @employeeId`, { employeeId })
+            .input('employeeId', sql.Int, employeeId)
+            .query(`SELECT OvertimeID, NumberOfHours, RatePerHour, CreatedOn
+                    FROM Overtime
+                    WHERE EmployeeID = @employeeId`);
 
-        return result.recordset
+        return result.recordset;
     } catch (error) {
-        return error
+        throw error;
     }
-}
-
-
+};

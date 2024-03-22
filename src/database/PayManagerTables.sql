@@ -144,33 +144,34 @@ DROP TABLE Deductions
 -- Inserting dummy data into the Deductions table
 INSERT INTO Deductions (Description, Amount, EmployeeID)
 VALUES
-('Tax', 100.00, 1),
-('Insurance', 50.00, 2),
-('Retirement', 75.00, 3),
-('Healthcare', 60.00, 4),
-('Nssf', 80.00, 5);
+('Tax', 100.00, 5),
+('Insurance', 50.00, 8)
+
+
 
 SELECT * FROM Deductions
 
 CREATE TABLE CashAdvances (
     CashAdvanceID INT PRIMARY KEY IDENTITY(1,1),
     EmployeeID INT FOREIGN KEY REFERENCES Employees(EmployeeID),
-    NumberOfHours INT DEFAULT 0,
-    CreatedOn DATETIME DEFAULT GETDATE()
+    DateOfAdvance DATE DEFAULT GETDATE(),
+    Amount DECIMAL(10, 2) NOT NULL
 );
+
+-- Inserting dummy data into the CashAdvances table
+INSERT INTO CashAdvances (EmployeeID, DateOfAdvance, Amount)
+VALUES
+    (1, '2024-03-21', 500.00),
+    (2, '2024-03-21', 750.00),
+    (3, '2024-03-20', 1000.00),
+    (4, '2024-03-20', 300.00);
 
 SELECT * FROM  CashAdvances
 
 DROP TABLE CashAdvances
 
 -- Inserting dummy data into the CashAdvances table
-INSERT INTO CashAdvances (EmployeeID, NumberOfHours)
-VALUES
-(1, 3),
-(2, 2),
-(3, 4),
-(4, 1),
-(5, 5);
+
 
 CREATE TABLE Overtime (
     OvertimeID INT PRIMARY KEY IDENTITY(1,1),
@@ -223,4 +224,33 @@ VALUES
                 WHERE ScheduleID = @ScheduleID
 
 
-                
+SELECT Employees.EmployeeID, Employees.FirstName, Employees.LastName, Schedule.InTime, Schedule.OutTime, Schedule.ScheduleName
+FROM Employees
+INNER JOIN Schedule ON Employees.ScheduleID = Schedule.ScheduleID
+WHERE Schedule.ScheduleID = Employees.ScheduleID;
+
+
+SELECT 
+    CashAdvances.CashAdvanceID,
+    CashAdvances.EmployeeID,
+    CashAdvances.DateOfAdvance,
+    CashAdvances.Amount,
+    Employees.FirstName,
+    Employees.LastName
+FROM 
+    CashAdvances
+INNER JOIN 
+    Employees ON CashAdvances.EmployeeID = Employees.EmployeeID;
+
+
+SELECT 
+    Employees.EmployeeID,
+    Employees.FirstName,
+    Employees.LastName,
+    Deductions.DeductionID,
+    Deductions.DeductionType,
+    Deductions.Amount
+FROM 
+    Employees
+INNER JOIN 
+    Deductions ON Employees.EmployeeID = Deductions.EmployeeID;

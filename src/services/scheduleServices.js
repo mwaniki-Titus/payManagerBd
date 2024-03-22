@@ -104,3 +104,19 @@ export const deleteScheduleService = async (scheduleID) => {
         throw error;
     }
 };
+
+export const getEmployeesInScheduleService = async (scheduleID) => {
+    try {
+        const result = await poolRequest()
+            .input('ScheduleID', sql.Int, scheduleID)
+            .query(`
+                SELECT Employees.EmployeeID, Employees.FirstName, Employees.LastName, Schedule.InTime, Schedule.OutTime, Schedule.ScheduleName
+                FROM Employees
+                INNER JOIN Schedule ON Employees.ScheduleID = Schedule.ScheduleID
+                WHERE Schedule.ScheduleID = @ScheduleID
+            `);
+        return result.recordset;
+    } catch (error) {
+        return error;
+    }
+};

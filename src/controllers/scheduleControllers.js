@@ -1,5 +1,5 @@
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError , sendSuccess} from "../helpers/helperFunctions.js";
-import { addScheduleService, getAllScheduleService, updateScheduleService, deleteScheduleService, getScheduleByIdService } from "../services/scheduleServices.js";
+import { addScheduleService, getAllScheduleService, updateScheduleService, deleteScheduleService, getEmployeesInScheduleService, getScheduleByIdService } from "../services/scheduleServices.js";
 import logger from "../utils/logger.js";
 
 
@@ -96,6 +96,23 @@ export const getOneSchedule = async (req, res) => {
             return res.status(200).json(schedule);
         } else {
             sendNotFound(res, 'Schedulenot found');
+        }
+    } catch (error) {
+        sendServerError(res, error.message);
+    }
+};
+
+
+
+export const getEmployeesInScheduleController = async (req, res) => {
+    try {
+        const scheduleID = req.params.scheduleID; 
+        const employees = await getEmployeesInScheduleService(scheduleID);
+
+        if (employees.length > 0) {
+            return res.status (200).json(employees)
+        } else {
+            sendNotFound(res, 'No employees found for the given schedule ID');
         }
     } catch (error) {
         sendServerError(res, error.message);

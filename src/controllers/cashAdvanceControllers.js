@@ -1,39 +1,42 @@
-import { sendCreated, sendNotFound, sendServerError } from "../helpers/helperFunctions.js";
-import { createCashAdvancesService, getAllCashAdvancesServices } from "../services/cashAdvanceServices.js";
-import { getEmployeeByIDService } from "../services/userServices.js";
+import { createCashAdvanceService, getAllCashAdvancesService, updateCashAdvanceService  } from '../services/cashAdvanceServices.js';
+import { sendCreated, sendServerError, sendNotFound } from "../helpers/helperFunctions.js";
 
-export const createCashAdvances = async (req, res) => {
+export const createCashAdvanceController = async (req, res) => {
     try {
-        const cashAdvances = {
-            EmployeeID: req.body.EmployeeID,
-            amount: req.body.amount,
-            number_of_hours: req.body.number_of_hours // Adjusted property name
-        };
+        const { employeeID, amount } = req.body;
+        await createCashAdvanceService(employeeID, amount);
+        sendCreated(res, "Cash advance created successfully.");
+    } catch (error) {
+        sendServerError(res, error.message);
+    }
+};
 
-        const user = await getEmployeeByIDService(cashAdvances.EmployeeID);
-        if (user.length) {
-            const response = await createCashAdvancesService(cashAdvances);
-            console.log(response);
-            if (response.rowsAffected > 0) {
-                sendCreated(res, `Cash advance for employee id ${cashAdvances.EmployeeID} has been created successfully`);
-            }
+export const getAllCashAdvancesController = async (req, res) => {
+    try {
+        const cashAdvances = await getAllCashAdvancesService();
+        if (cashAdvances.length > 0) {
+            res.status(200).json(cashAdvances);
         } else {
-            sendNotFound(res, "Employee records not found");
+            sendNotFound(res, "No cash advances found.");
         }
     } catch (error) {
         sendServerError(res, error.message);
     }
 };
 
-export const getAllCashAdvances = async (req, res) => {
+
+
+export const updateCashAdvanceController = async (req, res) => {
+    const { cashAdvanceID, amount } = req.body;
+
     try {
-        const cashAdvances = await getAllCashAdvancesServices();
-        if (cashAdvances.length) {
-            return res.status(200).json(cashAdvances);
-        } else {
-            sendNotFound(res, "Records of the cash advances not found");
-        }
+      
+        const response = await updateCashAdvanceService(cashAdvanceID, amount);
+
+     
+        res.status(200).json({ message: 'Cash advance updated successfully', data: response });
     } catch (error) {
-        sendServerError(res, error.message);
+        // Handle errors
+        res.status(500).json({ error: error.message });
     }
 };
