@@ -1,12 +1,13 @@
 import express from 'express';
+import { Router } from 'express';
 import { createNewDeduction, getAllDeductions } from '../controllers/deductionControllers.js';
 
 
-const deductionRoutes = express.Router();
+const deductionRouter = express.Router();
 
 
-deductionRoutes.post('/deductions', createNewDeduction);
-deductionRoutes.get('/deductions', getAllDeductions);
+deductionRouter.post('/deductions/add', createNewDeduction);
+deductionRouter.get('/deductions', getAllDeductions);
 
 
-export default deductionRoutes;
+export default deductionRouter;

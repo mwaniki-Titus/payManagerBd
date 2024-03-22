@@ -36,7 +36,12 @@ export const getPositionByNameService = async (positionDescription) => {
 export const getAllPositionsService = async () => {
     try {
         const result = await poolRequest()
-            .query(`SELECT * FROM Position`);
+        .query(`
+        SELECT Position.*, Employees.*
+        FROM Position
+        INNER JOIN Employees ON Employees.PositionID = Position.PositionID
+      
+    `);
         
         return result.recordset;
     } catch (error) {
@@ -66,6 +71,40 @@ export const editPositionService = async (positionID, updatedPositionDetails) =>
             .query(`
                 UPDATE Position
                 SET PositionDescription = @PositionDescription, GrossSalary = @GrossSalary
+                WHERE PositionID = @PositionID
+            `);
+
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+
+export const getPositionIdService = async (positionID) => {
+    try {
+        const result = await poolRequest()
+            .input('PositionID', mssql.VarChar, positionID)
+            .query(`
+                SELECT Position.*, Employees.*
+                FROM Position
+                INNER JOIN Employees ON Employees.PositionID = Position.PositionID
+                WHERE PositionID = @PositionID
+            `);
+        
+        return result.recordset;
+    } catch (error) {
+        return error;
+    }
+}
+
+
+export const deletePositionService = async (positionID) => {
+    try {
+        const result = await poolRequest()
+            .input('PositionID', mssql.VarChar, positionID)
+            .query(`
+                DELETE FROM Position
                 WHERE PositionID = @PositionID
             `);
 

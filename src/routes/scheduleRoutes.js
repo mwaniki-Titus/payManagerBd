@@ -1,14 +1,14 @@
 
 import { Router } from "express";
-import { createNewSchedule, getAllSchedule, updateSchedule, deleteSchedule} from "../controllers/scheduleControllers.js";
+import { addScheduleController, getAllScheduleController, updateScheduleController, deleteScheduleController} from "../controllers/scheduleControllers.js";
 
 
 const scheduleRouter=Router()
 
-scheduleRouter.post('/schedule',createNewSchedule)
-scheduleRouter.get('/schedule/all',getAllSchedule)
-scheduleRouter.put('/schedule/:scheduleID', updateSchedule);
-scheduleRouter.delete('/schedule/:scheduleID', deleteSchedule);
+scheduleRouter.post('/schedule/addSchedule',addScheduleController);
+scheduleRouter.get('/schedule/',getAllScheduleController);
+scheduleRouter.put('/schedule/update/:scheduleID', updateScheduleController);
+scheduleRouter.delete('/schedule/remove/:scheduleID', deleteScheduleController);
 
 
 

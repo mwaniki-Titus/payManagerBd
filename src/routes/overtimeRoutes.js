@@ -9,7 +9,7 @@ import { createNewOvertime, getAllOvertimeRecord } from "../controllers/overtime
 
 const overtimeRouter=Router()
 
-overtimeRouter.get('/overtime',getAllOvertimeRecord)
+overtimeRouter.get('/overtime/getall',getAllOvertimeRecord)
 overtimeRouter.post('/overtime',createNewOvertime)
 
 

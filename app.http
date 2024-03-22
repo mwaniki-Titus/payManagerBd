@@ -3,55 +3,56 @@ GET http://localhost:8000/api/users/getAllUsers
 
 
 ###
-GET http://localhost:8000/api/users/getAllUsers/employees
+GET http://localhost:8000/api/users/getUserByID/1
 
 ###
-GET http://localhost:8000/api/users/getUserByID/7
+DELETE  http://localhost:8000/api/users/deleteEmployee/1
 ###//add an employee
+
 POST http://localhost:8000/api/users/addNewEmployee
 Content-Type: application/json
 
 {
-    "FirstName": "pop",
-    "LastName": "pob",
+    "FirstName": "John",
+    "LastName": "oe",
     "Location": "New York",
     "BirthDate": "1998-01-01",
     "Contact": "1234564508",
     "Gender": "male",
     "admin": false,
-    "PositionID": 7,
-    "ScheduleID": 7,
+    "PositionID": 3,
+    "ScheduleID": 1,
     "PhotoURL": "https://example.com/photo.jpg",
-    "Email": "poop@example.com",
-    "Password": "password8",
+    "Email": "joe@example.com",
+    "Password": "password",
     "BankName": "Example Bank",
     "BankBranch": "New York Branch",
     "AccountNumber": "1234567780",
     "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at fermentum diam."
 }
-
 ###
-PUT http://localhost:8000/api/users/UpdateEmployeeByID/1
+PUT http://localhost:8000/api/users/UpdateEmployeeByID/9
 Content-Type: application/json
 
 {
-    "FirstName": "Tony",
-    "LastName": "Doe",
+    "FirstName": "John",
+    "LastName": "doe",
     "Location": "New York",
-    "BirthDate": "1990-01-01T00:00:00.000Z",
-    "Contact": "1234567890",
-    "Gender": "Male",
+    "BirthDate": "1998-01-01",
+    "Contact": "1234564508",
+    "Gender": "male",
     "admin": false,
-    "PositionID": 1,
-    "ScheduleID": 1,
+    "PositionID": 2,
+    "ScheduleID": 2,
     "PhotoURL": "https://example.com/photo.jpg",
-    "Email": "john.doe@example.com",
-    "Password": "password123",
+    "Email": "oe@example.com",
+    "Password": "password6",
     "BankName": "Example Bank",
     "BankBranch": "New York Branch",
-    "AccountNumber": "1234567890",
+    "AccountNumber": "1234567780",
     "Bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at fermentum diam."
-  },
+}
+  
 ###//add an employee
 POST http://localhost:8000/api/users/login
 Content-Type: application/json
@@ -71,39 +72,48 @@ Content-Type: application/json
 
 /////////---------------position--------------------------------------------------------------------////////
 ### 
-GET  http://localhost:8000/api/position
+GET  http://localhost:8000/api/position/all
 
 ###
 POST http://localhost:8000/api/position/addPosition
 Content-Type: application/json
 
 {
-  "PositionDescription": "Software Engineer",
+  "PositionDescription": " Web developer",
   "GrossSalary": 7000
 }
 
 
 ###
-PATCH  http://localhost:8000/api/position/32
+PATCH  http://localhost:8000/api/position/1
 Content-Type: application/json
 
 {
-  "PositionDescription": "Software Engineer",
+  "PositionDescription": "Developer",
   "GrossSalary": 7000
 }
 
 
 
 ###
-GET   http://localhost:8000/api/position/2
+DELETE http://localhost:8000/api/position/3
 
 
 
 ////------------------------------cashadvance-------------------------------------------/////////
 ###
-GET http://localhost:8000/api/
-### 
 GET http://localhost:8000/api/cashadvances
+
+
+### 
+POST http://localhost:5000/api//cashadvances/add
+content-Type: application/json
+
+{
+    "EmployeeID": 123,  
+    "amount": 500,      
+    "number_of_hours": 8  
+}
 
 
 ### Deleting a single user
@@ -113,12 +123,9 @@ DELETE  http://localhost:5000/api//cashadvances/
 POST http://localhost:5000/api//cashadvances/add
 content-Type: application/json
 
-# {
-  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
-  # "content": "This is a new post by Mike.",
-  # "likes": 18,e
-  # "comments": 10
-# }
+{
+
+ }
 
 
 
@@ -127,16 +134,23 @@ content-Type: application/json
 
 
 ###
-GET http://localhost:8000/api/position/1
+GET http://localhost:8000/api/deductions
 ### 
-GET http://localhost:8000/api/position
+POST http://localhost:8000/api/deductions/add
+
+{
+    "description": "Medical Insurance",
+    "amount": 100.50,
+    "employeeID": 14
+}
+
 
 
 ### Deleting a single user
-DELETE  http://localhost:8000/api/position/7
+DELETE  http://localhost:8000/api/deductions/
 
 ### 
-POST http://localhost:8000/api/position
+PUT http://localhost:8000/api/14
 content-Type: application/json
 
  {
@@ -149,39 +163,47 @@ content-Type: application/json
 
 //----------------------------------------schedule---------------------------------//////
 
+
 ###
-GET http://localhost:8000/api/schedule/all
+GET http://localhost:8000/api/schedule/employee
+
+
+###
+GET http://localhost:8000/api/schedule
+
+
+
+### Add
+POST http://localhost:8000/api/schedule/addSchedule
+content-Type: application/json
+
+{
+  "InTime": "01:00:00", 
+  "OutTime": "7:00:00",
+  "ScheduleName": "morning Shift"
+}
 
 ### 
-POST  http://localhost:8000/api/schedule
+PUT http://localhost:8000/api/schedule/update/1
+content-Type: application/json
 
   {
-    "InTime": "1971-01-01T07:00:00.000Z",
-    "OutTime": "1971-01-01T16:00:00.000Z",
-    "CreatedAt": "2025-05-19T16:44:59.967Z",
-  }
-
-### 
-PUT   http://localhost:8000/api/schedule/20
-
-  {
-    "InTime": "1970-01-01T07:00:00.000Z",
-    "OutTime": "1970-01-01T16:00:00.000Z",
-    "CreatedAt": "2025-03-19T16:43:59.967Z",
+    "InTime": "02:00:00", 
+    "OutTime": "16:00:00",
+    "ScheduleName": "Eve Shift"
   }
 
 
-### Deleting a single user
-DELETE  http://localhost:8000/api/schedule/1
-
+###
+DELETE  http://localhost:8000/api/schedule/remove/6
 ### 
 
 
 
-//overtime
+//-----------------------------overtime---------------------------------------------
 
 
-GET http://localhost:8000/api/
+GET http://localhost:8000/apiovertime/getall
 ### 
 GET http://localhost:8000/api/
 
@@ -193,11 +215,51 @@ DELETE  http://localhost:8000/api/
 POST http://localhost:8000/api/
 content-Type: application/json
 
-# {
-  # "UserID": "c9cdc0b9-7628-4d7a-85c2-c125a27388c8",
-  # "content": "This is a new post by Mike.",
-  # "likes": 18,e
-  # "comments": 10
-# }
+{
+  
+ }
 
 
+PUT  http://localhost:8000/api/
+content-Type: application/json
+
+
+
+////----------------------------------Attendance----------------------------////
+
+### get all Attendance
+GET http://localhost:8000/api/attendance/getAll 
+
+### get Attendance By ID.
+GET http://localhost:8000/api/attendance/getattendanceByID/14
+
+### Delete Attendance .
+DELETE http://localhost:8000/api/attendance/deleteattendanceByID/4
+
+
+
+### Add New Attendance
+POST http://localhost:8000/api/attendance/addAttendance
+Content-Type: application/json
+
+{
+    "EmployeeID": 1,
+    "Date": "2024-03-18",
+    "ScheduleID": 1,
+    "TimeIn": "08:00:AM",
+    "TimeOut": "14:00:pm",
+    "Hours": "6"
+}
+
+### Update Attendance
+PUT http://localhost:8000/api/attendance/editAttendance/6
+Content-Type: application/json
+
+{
+    "EmployeeID": 2,
+    "Date": "2024-03-18T00:00:00.000Z",
+    "ScheduleID": 1,
+    "TimeIn": "1970-01-01T08:00:00.000Z",
+    "TimeOut": "14:00:00.000Z",
+    "Hours": "6"
+}

@@ -1,48 +1,43 @@
 
-import mssql from 'mssql'
+import sql from 'mssql'
 import * as uuid from 'uuid'
 import { poolRequest } from '../utils/dbConnect.js'
 
 
 
-
-export const createNewOvertimeService=async(overtime)=>{
+export const createNewOvertimeService = async (overtime) => {
     try {
-          const{number_of_hours,rate_per_hours,user_id}=overtime
-          const overtime_id=uuid.v4()
+        const { number_of_hours, rate_per_hours, employeeID } = overtime;
+        const overtime_id = uuid.v4();
 
-          const result=await poolRequest()
-          .input('overtime_id' , mssql.VarChar,overtime_id)
-          .input('number_of_hours',mssql.VarChar, number_of_hours)
-          .input('rate_per_hours',mssql.Decimal,rate_per_hours)
-          .input('user_id',mssql.VarChar,user_id)
-          .query(
-            `INSERT INTO overtime(overtime_id,number_of_hours,rate_per_hours,user_id)
-             VALUES(@overtime_id,@number_of_hours,@rate_per_hours,@user_id)
-            `
-          )
-          
-          return result
-        
+        const result = await poolRequest()
+            .input('overtime_id', sql.UniqueIdentifier, overtime_id)
+            .input('number_of_hours', sql.Int, number_of_hours)
+            .input('rate_per_hours', sql.Decimal(10, 2), rate_per_hours)
+            .input('employeeID', sql.Int, employeeID)
+            .query(
+                `INSERT INTO Overtime (OvertimeID, NumberOfHours, RatePerHour, CreatedOn, EmployeeID)
+                 VALUES (@overtime_id, @number_of_hours, @rate_per_hours, GETDATE(), @employeeID)`
+            );
+
+        return result;
     } catch (error) {
-        return error 
+        return error;
     }
 }
 
 
-export const getAllOvertimeService=async()=>{
+export const getEmployeeOvertimeService = async (employeeId) => {
     try {
-        const result=await poolRequest()
-        .query(`SELECT overtime.*,tbl_user.firstname,tbl_user.lastname
-                FROM overtime
-                JOIN tbl_user ON tbl_user.user_id=overtime.user_id
-        
-         `)
+        const result = await poolRequest()
+            .query(`SELECT OvertimeID, OvertimeDate, HoursWorked
+                    FROM OvertimeRecords
+                    WHERE EmployeeID = @employeeId`, { employeeId })
 
         return result.recordset
-        
     } catch (error) {
         return error
     }
 }
+
 

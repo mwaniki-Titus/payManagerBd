@@ -1,5 +1,5 @@
-import { sendBadRequest, sendCreated, sendNotFound, sendServerError } from "../helpers/helperFunctions.js";
-import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, getPositionByNameService } from "../services/positionServices.js";
+import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helperFunctions.js";
+import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, getPositionByNameService, deletePositionService } from "../services/positionServices.js";
 import logger from "../utils/logger.js";
 
 
@@ -64,12 +64,10 @@ export const editPosition = async (req, res) => {
         const positionId = req.params.position_id;
         const { positionDescription, grossSalary } = req.body;
 
-        console.log(positionId)
-        if (!positionDescription || !grossSalary) {
+        if (positionDescription || grossSalary) {
             return sendBadRequest(res, 'Input for all fields is required');
         }
 
-        
         const position = await getPositionByIdService(positionId);
         if (position.length === 0) {
             return sendNotFound(res, 'Position not found');
@@ -80,13 +78,35 @@ export const editPosition = async (req, res) => {
             grossSalary
         };
 
-        
         const response = await editPositionService(positionId, updatedPositionDetails);
         
         if (response.rowsAffected > 0) {
             return sendSuccess(res, 'Position updated successfully');
         } else {
             return sendServerError(res, 'Failed to update position');
+        }
+    } catch (error) {
+        return sendServerError(res, error.message);
+    }
+};
+
+
+
+export const deletePosition = async (req, res) => {
+    try {
+        const positionId = req.params.position_id;
+
+        const position = await getPositionByIdService(positionId);
+        if (position.length === 0) {
+            return sendNotFound(res, 'Position not found');
+        }
+
+        const result = await deletePositionService(positionId);
+        
+        if (result.rowsAffected > 0) {
+            return sendSuccess(res, 'Position deleted successfully');
+        } else {
+            return sendServerError(res, 'Failed to delete position');
         }
     } catch (error) {
         return sendServerError(res, error.message);

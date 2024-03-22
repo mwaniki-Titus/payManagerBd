@@ -1,25 +1,54 @@
 
-import mssql from 'mssql'
-import { poolRequest } from '../utils/dbConnect.js'
-import * as uuid from 'uuid'
-// import { schedule } from 'node-cron'
+import { poolRequest, sql } from '../utils/dbConnect.js';
+import * as uuid from 'uuid';
 
 
-export const createNewScheduleService = async (schedule) => {
+
+export const addScheduleService = async (newSchedule) => {
+    const { InTime, OutTime, ScheduleName } = newSchedule;
     try {
-        const scheduleID = uuid.v4();
+        const result = await poolRequest() 
+            .input("InTime", sql.VarChar(255),  InTime) 
+            .input("OutTime", sql.VarChar(255), OutTime)    
+            .input("ScheduleName", sql.VarChar(255),ScheduleName) 
+            .query(
+                `INSERT INTO Schedule (InTime, OutTime, ScheduleName)
+                VALUES ( @InTime, @OutTime, @ScheduleName)` 
+            );
+        return result; 
+    } catch (error) {
+        return error; 
+    }
+}
+export const getScheduleByIdService = async (scheduleID) => {
+    try {
         const result = await poolRequest()
-            .input('InTime', mssql.Time, schedule.in_time) 
-            .input('OutTime', mssql.Time, schedule.out_time) 
-            .query(`
-                INSERT INTO Schedule ( InTime, OutTime)
-                VALUES ( @InTime, @OutTime)
-            `);
-        return result;
+            .input('ScheduleID', sql.VarChar, scheduleID)
+            .query(`SELECT * FROM Position WHERE ScheduleID = @ScheduleID`);
+        
+        return result.recordset;
     } catch (error) {
         return error;
     }
 }
+
+export const getScheduleIdService = async (scheduleID) => {
+    try {
+        const result = await poolRequest()
+        .input('ScheduleID', sql.VarChar, scheduleID)
+        .query(`
+            SELECT Schedule.*, Employees.*
+            FROM Schedule
+            INNER JOIN Employees ON Employees.ScheduleID = Schedule.ScheduleID
+            WHERE ScheduleID = @ScheduleID
+        `);
+        return result.recordset;
+    } catch (error) {
+        return error;
+    }
+};
+
+
 
 export const getAllScheduleService = async () => {
     try {
@@ -29,28 +58,29 @@ export const getAllScheduleService = async () => {
     } catch (error) {
         return error;
     }
-}
+};
 
 export const getAShiftByDescriptionService = async (scheduleDescription) => {
     try {
         const result = await poolRequest()
-            .input('ScheduleDescription', mssql.VarChar, scheduleDescription) 
-            .query(`SELECT * FROM Schedule WHERE ScheduleDescription = @ScheduleDescription`); 
+            .input('ScheduleDescription', sql.VarChar, scheduleDescription) 
+            .query(`SELECT * FROM Schedule WHERE ScheduleName = @ScheduleDescription`); 
+        return result.recordset;
     } catch (error) {
         return error;
     }
-}
-
+};
 
 export const updateScheduleService = async (updatedSchedule) => {
     try {
         const result = await poolRequest()
-            .input('ScheduleID', mssql.VarChar, updatedSchedule.scheduleID)
-            .input('InTime', mssql.Time, updatedSchedule.in_time)
-            .input('OutTime', mssql.Time, updatedSchedule.out_time)
+            .input('ScheduleID', sql.Int, updatedSchedule.ScheduleID)
+            .input('InTime', sql.Time, updatedSchedule.InTime)
+            .input('OutTime', sql.Time, updatedSchedule.OutTime)
+            .input('ScheduleName', sql.VarChar(50), updatedSchedule.ScheduleName)
             .query(`
                 UPDATE Schedule
-                SET InTime = @InTime, OutTime = @OutTime
+                SET InTime = @InTime, OutTime = @OutTime, ScheduleName = @ScheduleName
                 WHERE ScheduleID = @ScheduleID
             `);
 
@@ -63,7 +93,7 @@ export const updateScheduleService = async (updatedSchedule) => {
 export const deleteScheduleService = async (scheduleID) => {
     try {
         const result = await poolRequest()
-            .input('ScheduleID', mssql.VarChar, scheduleID)
+            .input('ScheduleID', sql.Int, scheduleID)
             .query(`
                 DELETE FROM Schedule
                 WHERE ScheduleID = @ScheduleID

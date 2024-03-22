@@ -1,6 +1,9 @@
 CREATE DATABASE PayManager;
 USE PayManager;
 
+Drop database PayManager
+
+
 CREATE TABLE Employees (
     EmployeeID INT PRIMARY KEY IDENTITY(1,1),
     FirstName VARCHAR(50),
@@ -27,6 +30,8 @@ CREATE TABLE Employees (
 
 DROP TABLE Employees
 
+SELECT * FROM  Employees 
+
 
 CREATE TABLE Position (
     PositionID INT PRIMARY KEY IDENTITY(1,1),
@@ -38,30 +43,51 @@ CREATE TABLE Position (
 INSERT INTO Position (PositionDescription, GrossSalary)
 VALUES
 ('Manager', 50000),
-('Developer', 40000),
-('Designer', 35000),
-('HR', 45000),
-('Accountant', 38000);
+('Developer', 40000)
 
 
+
+DROP TABLE Position 
 SELECT * FROM  Position
+
+CREATE TABLE Attendance (
+    AttendanceID INT PRIMARY KEY IDENTITY(1,1),
+    EmployeeID INT,
+    Date DATE,
+    ScheduleID INT,
+    TimeIn VARCHAR(255),
+    TimeOut VARCHAR(255),
+    Hours VARCHAR(255),
+    CONSTRAINT FK_Employee_Attendance FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
+
+
+DROP TABLE Attendance
+
+INSERT INTO Attendance (EmployeeID, Date, ScheduleID, TimeIn, TimeOut, Hours) VALUES
+(1, '2024-03-20', 1, '09:00 AM', '05:00 PM', '8 hours'),
+(2, '2024-03-20', 1, '09:30 AM', '06:00 PM', '8.5 hours')
+
+
+
 
 CREATE TABLE Schedule (
     ScheduleID INT PRIMARY KEY IDENTITY(1,1),
     InTime TIME,
     OutTime TIME,
-    CreatedAt DATETIME DEFAULT GETDATE()
+    ScheduleName VARCHAR(50)
 );
 
--- Inserting dummy data into the Schedule table
-INSERT INTO Schedule (InTime, OutTime)
-VALUES
-('08:00:00', '17:00:00'), 
-('09:00:00', '18:00:00'), 
-('10:00:00', '19:00:00'), 
-('07:00:00', '16:00:00'), 
-('11:00:00', '20:00:00'); 
+DROP TABLE Schedule
 
+
+-- Inserting dummy data into the Schedule table
+INSERT INTO Schedule (InTime, OutTime, ScheduleName) VALUES
+    
+    ('09:00 AM', '01:00 PM', 'Late Shift'),
+    ('01:00 AM', '04:00 PM', 'Early Shift');
+
+SELECT * FROM Schedule;
 
 
 CREATE TABLE EmployeeSchedule (
@@ -122,8 +148,7 @@ VALUES
 ('Insurance', 50.00, 2),
 ('Retirement', 75.00, 3),
 ('Healthcare', 60.00, 4),
-('401k', 80.00, 5);
-
+('Nssf', 80.00, 5);
 
 SELECT * FROM Deductions
 
@@ -141,11 +166,11 @@ DROP TABLE CashAdvances
 -- Inserting dummy data into the CashAdvances table
 INSERT INTO CashAdvances (EmployeeID, NumberOfHours)
 VALUES
-(1, 3), -- John Doe's cash advance
-(2, 2), -- Jane Smith's cash advance
-(3, 4), -- Alice Johnson's cash advance
-(4, 1), -- Bob Brown's cash advance
-(5, 5); -- Eve Williams's cash advance
+(1, 3),
+(2, 2),
+(3, 4),
+(4, 1),
+(5, 5);
 
 CREATE TABLE Overtime (
     OvertimeID INT PRIMARY KEY IDENTITY(1,1),
@@ -167,3 +192,35 @@ VALUES
 (4, 20.00, 3),
 (6, 30.00, 4),
 (2, 15.00, 5);
+
+
+
+
+ SELECT Position.*, Employees.*
+        FROM Position
+        INNER JOIN Employees ON Employees.PositionID = Position.PositionID;
+        WHERE 
+
+
+   SELECT Employees.*, Position.*
+                FROM Employees
+                
+                JOIN Position ON Position.PositionID = Employees.PositionID;
+
+  SELECT Employees.*,schedule.*, Position.*
+                FROM Employees
+                JOIN Schedule on Schedule.ScheduleID = Schedule.ScheduleID 
+                JOIN Position ON Position.PositionID = Employees.PositionID
+
+   SELECT Attendance.*, Employees.*
+                FROM Attendance
+                JOIN Employees ON Employees.EmployeeID = Attendance.EmployeeID
+                WHERE AttendanceID = @AttendanceID
+                
+   SELECT Schedule.*, Employees.*
+                FROM Schedule
+                INNER JOIN Employees ON Employees.ScheduleID = Schedule.ScheduleID
+                WHERE ScheduleID = @ScheduleID
+
+
+                

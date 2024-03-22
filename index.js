@@ -5,11 +5,11 @@ import bodyParser from 'body-parser'
 
 import userRouter from './src/routes/userRoutes.js'
 import positionRouter from './src/routes/positionRoutes.js'
-import scheduleRouter from './src/routes/scheduleRoutes.js'
 import deductionsRouter from './src/routes/deductionRoutes.js'
 import cashAdvancesRouter from './src/routes/cashAdvanceRoutes.js'
 import overtimeRouter from './src/routes/overtimeRoutes.js'
-
+import scheduleRouter from './src/routes/scheduleRoutes.js'
+import attendanceRouter from './src/routes/attendanceRoutes.js'
 
 dotenv.config()
 
@@ -28,10 +28,11 @@ app.use(cors(corsOptions));
 
 app.use('/api', userRouter),
 app.use('/api', positionRouter),
-app.use('/api', scheduleRouter),
 app.use('/api',cashAdvancesRouter),
 app.use('/api', deductionsRouter),
-app.use('./api', overtimeRouter)
+app.use('/api', overtimeRouter),
+app.use('/api', scheduleRouter),
+app.use('/api', attendanceRouter),
 
 
 

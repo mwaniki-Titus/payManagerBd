@@ -1,56 +1,52 @@
-import { createNewOvertimeService, getAllOvertimeService } from "../services/overtimeServices.js"
+import { createNewOvertimeService, getEmployeeOvertimeService  } from "../services/overtimeServices.js"
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helperFunctions.js"
-// import { getEmployeeByIDService, getUserById } from "../services/userServices"
+import { getEmployeeByIDService } from "../services/userServices.js"
 
 
-
-
-export const getAllOvertimeRecord=async(req,res)=>{
+export const getAllOvertimeRecord = async (req, res) => {
     try {
-          const response =await getAllOvertimeService()
-          console.log(response)
-          if(response.length){
-            
-     
-            return res.status(200).json(response)
-            
-            
-          }
-          else{
-            sendNotFound(res,'no records found for overtime ')
-          }
-        
+        const response = await getEmployeeOvertimeService ();
+        console.log(response);
+        if (response.length > 0) {
+            return res.status(200).json(response);
+        } else {
+            sendNotFound(res, 'No records found for overtime');
+        }
     } catch (error) {
-        sendServerError(res, error.message)
+        sendServerError(res, error.message);
     }
 }
 
-export const  createNewOvertime=async(req,res)=>{
+export const createNewOvertime = async (req, res) => {
     try {
-         const overtime={
-            number_of_hours:req.body.number_of_hours,
-            rate_per_hours:req.body.rate_per_hours,
-            user_id:req.body.user_id
-         }
+        const { number_of_hours, rate_per_hours, user_id } = req.body;
 
-        console.log(overtime)
-        const user=await getUserById(overtime.user_id)
-        console.log("user",user[0].firstname)
-        if(user.length){
-            const response=await createNewOvertimeService(overtime)
-            console.log(response)
-            if(response.rowsAffected>0){
-                sendCreated(res, `${user[0].firstname} of id ${overtime.user_id} cash overtime record has been added successfully`)
-            }
-            else{
-                
-                sendNotFound(res,"employee records not found")
-                 
-            }
-        }    
+        // Check if required parameters are provided
+        if (!number_of_hours || !rate_per_hours || !user_id) {
+            return sendBadRequest(res, "Missing required parameters");
+        }
 
-        
+        const overtime = {
+            number_of_hours,
+            rate_per_hours,
+            user_id
+        };
+
+        const user = await getEmployeeByIDService(user_id);
+
+        // Check if user exists
+        if (!user || user.length === 0) {
+            return sendNotFound(res, "Employee not found");
+        }
+
+        const response = await createNewOvertimeService(overtime);
+
+        if (response.rowsAffected > 0) {
+            return sendCreated(res, `${user[0].firstname} (ID: ${user_id}) overtime record has been added successfully`);
+        } else {
+            return sendServerError(res, "Failed to create overtime record");
+        }
     } catch (error) {
-        sendServerError(res,error.message)
+        return sendServerError(res, error.message);
     }
 }

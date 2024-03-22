@@ -1,55 +1,47 @@
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError , sendSuccess} from "../helpers/helperFunctions.js";
-import { getAShiftByDescriptionService, createNewScheduleService, getAllScheduleService, updateScheduleService, deleteScheduleService } from "../services/scheduleServices.js";
+import { addScheduleService, getAllScheduleService, updateScheduleService, deleteScheduleService, getScheduleByIdService } from "../services/scheduleServices.js";
 import logger from "../utils/logger.js";
 
 
-export const createNewSchedule = async (req, res) => {
+
+
+export const addScheduleController = async (req, res) =>{
+    const {
+        InTime, OutTime, ScheduleName
+    } = req.body;
+    console.log(req.body);
+ 
     try {
-        const in_time = req.body.in_time;
-        const out_time = req.body.out_time;
-
-        const newSchedule = {
-            in_time: in_time,
-            out_time: out_time
-        };
-
-        logger.info(newSchedule);
-
+ 
        
-        const schedule = await getAShiftByDescriptionService(/* Pass description here */);
-
-        if (schedule.length > 0) {
-            sendBadRequest(res, `Schedule already exists`);
-        } else {
-            const response = await createNewScheduleService(newSchedule);
-            logger.info(response);
-            if (response.rowsAffected > 0) {
-                sendCreated(res, `Schedule has been created successfully`);
-            }
+        const newSchedule = { InTime, OutTime, ScheduleName } 
+        // console.log(newPosition);
+ 
+        const response = await addScheduleService(newSchedule);
+ 
+        if (response instanceof Error){
+            throw response;
         }
+ 
+        if (response.rowsAffected && response.rowsAffected[0] === 1) {
+            // sendMail(newUser.Email);
+            sendCreated(res, "Schedule created successfully");
+          } else {
+            sendServerError(res, "Failed to create Schedule");
+          }
     } catch (error) {
-        logger.error(error);
-        sendServerError(res, error);
+        sendServerError(res, error.message);
     }
-};
+  }
 
-
-export const updateSchedule = async (req, res) => {
+  
+// Controller function to update a schedule
+export const updateScheduleController = async (req, res) => {
     try {
         const scheduleID = req.params.scheduleID; 
-        const inTime = req.body.in_time;
-        const outTime = req.body.out_time;
-
-        const updatedSchedule = {
-            scheduleID: scheduleID,
-            in_time: inTime,
-            out_time: outTime
-        };
-
-        logger.info(updatedSchedule);
-
+        const { in_time, out_time } = req.body;
+        const updatedSchedule = { scheduleID, in_time, out_time };
         const response = await updateScheduleService(updatedSchedule);
-        logger.info(response);
 
         if (response.rowsAffected > 0) {
             sendSuccess(res, `Schedule with ID ${scheduleID} has been updated successfully`);
@@ -57,39 +49,55 @@ export const updateSchedule = async (req, res) => {
             sendNotFound(res, `Schedule with ID ${scheduleID} not found`);
         }
     } catch (error) {
-        logger.error(error);
-        sendServerError(res, error);
+        logger.error("Error updating schedule:", error);
+        sendServerError(res, "Failed to update schedule", error.message);
     }
 };
 
-export const getAllSchedule = async (req, res) => {
+// Controller function to get all schedules
+export const getAllScheduleController = async (req, res) => {
     try {
         const schedules = await getAllScheduleService();
         if (schedules.length > 0) {
-            return res.status(200).json(schedules);
+            res.status(200).json(schedules);
         } else {
             sendNotFound(res, 'No records of schedules found');
         }
     } catch (error) {
-        sendServerError(res, error);
+        logger.error("Error fetching schedules:", error);
+        sendServerError(res, "Failed to fetch schedules", error.message);
+    }
+};
+
+// Controller function to delete a schedule
+export const deleteScheduleController = async (req, res) => {
+    try {
+        const scheduleID = req.params.scheduleID;
+        const response = await deleteScheduleService(scheduleID);
+        
+        if (response.rowsAffected > 0) {
+            sendSuccess(res, `Schedule with ID ${scheduleID} has been deleted successfully`);
+        } else {
+            sendNotFound(res, `Schedule with ID ${scheduleID} not found`);
+        }
+    } catch (error) {
+        logger.error("Error deleting schedule:", error);
+        sendServerError(res, "Failed to delete schedule", error.message);
     }
 };
 
 
-export const deleteSchedule = async (req, res) => {
+export const getOneSchedule = async (req, res) => {
     try {
-        const scheduleID = req.params.scheduleID;
+        const scheduleId = req.params.schedule_id;
+        const schedule = await getScheduleByIdService(scheduleId);
 
-        const response = await deleteScheduleService(scheduleID);
-        
-        // Check if any rows were affected by the deletion
-        if (response.rowsAffected > 0) {
-            res.status(200).json({ message: `Schedule with ID ${scheduleID} has been deleted successfully` });
+        if (schedule.length) {
+            return res.status(200).json(schedule);
         } else {
-            res.status(404).json({ message: `Schedule with ID ${scheduleID} not found` });
+            sendNotFound(res, 'Schedulenot found');
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        sendServerError(res, error.message);
     }
 };

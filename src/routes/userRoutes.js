@@ -2,7 +2,7 @@ import { Router } from "express";
 import { addEmployeeController, 
     deleteEmployee, 
     getAllUserController, 
-    getEmpByIDController, 
+    getEmployeeByIDController, 
     loginUserController, 
     updateUserController
 } from "../controllers/userController.js";
@@ -11,11 +11,11 @@ import { addEmployeeController,
 const userRouter = Router();
 
 userRouter.get("/users/getAllUsers", getAllUserController);
-userRouter.get("/users/getUserByID/:EmployeeID", getEmpByIDController);
+userRouter.get("/users/getUserByID/:EmployeeID", getEmployeeByIDController);
 userRouter.post("/users/addNewEmployee", addEmployeeController);
 userRouter.post("/users/login", loginUserController);
 userRouter.put("/users/UpdateEmployeeByID/:EmployeeID", updateUserController);
-userRouter.delete("/users/deleteEmployeeById/:EmployeeID", deleteEmployee);
+userRouter.delete("/users/deleteEmployee/:EmployeeID", deleteEmployee);
 
 
 export default userRouter;

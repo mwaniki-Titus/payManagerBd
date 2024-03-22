@@ -6,47 +6,39 @@ import  * as uuid from 'uuid'
 
 
 
-
-export const createCashAdvancesService=async(cashAdvances)=>{
-    const {user_id,amount,number_of_hours}=cashAdvances
-    try{
-        const cash_advance_id=uuid.v4()
-        const response=await poolRequest()
-        .input('cash_advance_id',mssql.VarChar,cash_advance_id)
-        .input('user_id', mssql.VarChar,user_id)
-        .input('amount', mssql.Decimal,amount)
-        .input('number_of_hours',mssql.VarChar,number_of_hours)
-        .query(`
-                INSERT INTO cash_advances(cash_advance_id,user_id,number_of_hours,amount)
-                VALUES(@cash_advance_id, @user_id,@number_of_hours,@amount)
-        `)
-         return response
-
-    }
-    catch(error){
-        return error
-    }
-}
-
-
-export const getAllCashAdvancesServices=async()=>{
+export const createCashAdvancesService = async (cashAdvances) => {
+    const { EmployeeID, amount, number_of_hours } = cashAdvances;
     try {
-         const response=await poolRequest()
-         .query(`SELECT cash_advances.*, tbl_user.firstname, tbl_user.lastname, tbl_user.user_id, tbl_user.identification_number
-                FROM cash_advances 
-                JOIN tbl_user ON tbl_user.user_id=cash_advances.user_id
-
-         
-         
-         `)
-         return response.recordset
-        
+        const cash_advance_id = uuid.v4();
+        const response = await poolRequest()
+            .input('cash_advance_id', mssql.VarChar, cash_advance_id)
+            .input('EmployeeID', mssql.Int, EmployeeID) 
+            .input('amount', mssql.Decimal, amount)
+            .input('number_of_hours', mssql.Int, number_of_hours) 
+            .query(`
+                INSERT INTO CashAdvances (CashAdvanceID, EmployeeID, NumberOfHours, CreatedOn, Amount)
+                VALUES (@cash_advance_id, @EmployeeID, @number_of_hours, GETDATE(), @amount)
+            `);
+        return response;
     } catch (error) {
-        return error
+        return error;
     }
-}
+};
 
-import joi from 'joi'
+
+export const getAllCashAdvancesServices = async () => {
+    try {
+        const response = await poolRequest()
+            .query(`SELECT CashAdvances.*, Employees.FirstName, Employees.LastName, Employees.EmployeeID, Employees.Contact
+                    FROM CashAdvances 
+                    JOIN Employees ON Employees.EmployeeID = CashAdvances.EmployeeID`);
+        return response.recordset;
+    } catch (error) {
+        return error;
+    }
+};
+
+
 
 export const userLoginValidator=({email,password})=>{
 

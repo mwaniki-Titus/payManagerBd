@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
-import { addEmployeeService, deleteEmployeeService, getAllUserService,  getEmployeeByIDService, getUserByEmailService, updateEmployeeService} from '../services/userServices.js';
+import { addEmployeeService, deleteEmployeeService, getAllUserService, getEmployeeByIDService, getUserByEmailService, updateEmployeeService} from '../services/userServices.js';
 import { userLoginvalidator, validateNewEmployee } from '../validators/userValidators.js';
 import { sendBadRequest, sendDeleteSuccess, sendCreated,
 sendNotFound,
 sendServerError,
-// sendSuccess,
+sendSuccess,
 checkIfValuesIsEmptyNullUndefined} from '../helpers/helperFunctions.js';     
 import { response } from "express";
 // import { verifyToken } from "../middlewares/VerifyToken.js";
@@ -37,7 +37,7 @@ export const getAllUserController = async (req,res) => {
 };
 
 
-export const getEmpByIDController = async (req, res) => {
+export const getEmployeeByIDController = async (req, res) => {
     try {
       const EmployeeID = req.params.EmployeeID;
       const employee = await getEmployeeByIDService(EmployeeID);
@@ -56,46 +56,51 @@ export const getEmpByIDController = async (req, res) => {
 
 //Adding an Employee
 export const addEmployeeController = async (req, res) =>{
-    const {
-        FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
-    } = req.body;
-    // console.log(req.body);
+  const {
+      FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
+  } = req.body;
+  console.log(req.body);
 
-    try {
+  try {
 
-        const {error} = validateNewEmployee({
-            FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
-        });
+      const {error} = validateNewEmployee({
+          FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
+      });
 
-        if (error){
-            return res.status(400).send(error.details[0].message);
+      if (error){
+          // return res.status(400).send(error.details.message);
+          return res.status(400).send(error.details[0].message);
+      }
+
+      const existingUser = await getUserByEmailService(Email);
+
+      if (existingUser) {
+          return res.status(400).json({ error : "Employee already exists"});
+          // console.log("Use in the syste alredy");
+      }
+      
+      const newEmployee = {
+          FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
+      }
+      // console.log(newEmployee);
+
+      const response = await addEmployeeService(newEmployee);
+
+      if (response instanceof Error){
+          throw response;
+      }
+
+      if (response.rowsAffected && response.rowsAffected[0] === 1) {
+          // sendMail(newUser.Email);
+          sendCreated(res, "Employee created successfully");
+        } else {
+          sendServerError(res, "Failed to create Employee");
         }
-
-        const existingUser = await getUserByEmailService(Email);
-
-        if (existingUser) {
-            return res.status(400).json({ error : "Employee already exists"});
-        }
-        
-        const newEmployee = {
-            FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
-        }
-              const response = await addEmployeeService(newEmployee);
-
-        if (response instanceof Error){
-            throw response;
-        }
-
-        if (response.rowsAffected && response.rowsAffected[0] === 1) {
-            
-            sendCreated(res, "Employee created successfully");
-          } else {
-            sendServerError(res, "Failed to create Employee");
-          }
-    } catch (error) {
-        sendServerError(res, error.message);
-    }
+  } catch (error) {
+      sendServerError(res, error.message);
+  }
 }
+
 
 //send Email
 export const sendMail = async (email) => {
@@ -182,7 +187,7 @@ export const updateUserController = async (req, res) => {
     if (!exists){
       return res.status(404).json({ message: "Employee not found" });
     }
-   
+    
     if (exists){
       console.log("he exists")
     }
@@ -245,7 +250,7 @@ export const updateUserController = async (req, res) => {
           if (Bio) {
             updatedEmployeeData.Bio = Bio;
           }
-       
+        
           const updatedEmployee = await updateEmployeeService(updatedEmployeeData, employeeID);
           if (updatedEmployee && updatedEmployee.rowsAffected && updatedEmployee.rowsAffected[0] > 0) {
             return res.status(200).json({ message: "Employee updated successfully" });
@@ -256,6 +261,3 @@ export const updateUserController = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 }
-
-
-
