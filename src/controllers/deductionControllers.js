@@ -1,5 +1,5 @@
 
-import { createNewDeductionService, getAllDeductionService } from '../services/deductionServices.js';
+import { createNewDeductionService, getAllDeductionService, getDeductionsByEmployeeIDService } from '../services/deductionServices.js';
 import { getEmployeeByIDService } from '../services/userServices.js';
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError } from '../helpers/helperFunctions.js';
 
@@ -41,4 +41,16 @@ export const getAllDeductions = async (req, res) => {
     }
 };
 
-
+export const getDeductionsByEmployeeID = async (req, res) => {
+    try {
+        const employeeID = req.params.employeeID; 
+        const deductions = await getDeductionsByEmployeeIDService(employeeID);
+        if (deductions.length > 0) {
+            return res.status(200).json(deductions);
+        } else {
+            sendNotFound(res, 'No deductions found for the employee');
+        }
+    } catch (error) {
+        sendServerError(res, error.message);
+    }
+};

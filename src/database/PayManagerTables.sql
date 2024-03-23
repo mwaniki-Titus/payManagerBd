@@ -254,3 +254,11 @@ FROM
     Employees
 INNER JOIN 
     Deductions ON Employees.EmployeeID = Deductions.EmployeeID;
+
+
+
+     SELECT 
+     firstname, lastname, other_columns, EmployeeID FROM Employee
+      WHERE
+       EmployeeID = @employeeID;
+            

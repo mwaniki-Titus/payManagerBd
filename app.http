@@ -135,6 +135,8 @@ content-Type: application/json
 //---------------------------------deductions-------------------------------------------------/////
 
 
+###
+GET http://localhost:8000/api/deductions/employee/12
 
 ###
 GET http://localhost:8000/api/deductions
@@ -209,23 +211,23 @@ DELETE  http://localhost:8000/api/schedule/remove/6
 
 GET http://localhost:8000/api/overtime/getall
 ### 
-GET http://localhost:8000/api/
+GET http://localhost:8000/api/overtime/byid/2
 
 
 ### Deleting a single user
 DELETE  http://localhost:8000/api/
 
-### 
+###
 POST http://localhost:8000/api/overtime/add
 Content-Type: application/json
 
 {
   "number_of_hours":5,
   "rate_per_hours":15.5,
-  "employeeID":12
+  "employeeID":1
 }
 
-
+### 
 PUT  http://localhost:8000/api/
 content-Type: application/json
 

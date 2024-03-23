@@ -35,4 +35,15 @@ export const getAllDeductionService = async () => {
     }
 };
 
-// u
+export const getDeductionsByEmployeeIDService = async (employeeID) => {
+    try {
+        const response = await poolRequest()
+            .input('employeeID', mssql.Int, employeeID)
+            .query(`
+                SELECT * FROM Deductions WHERE EmployeeID = @employeeID
+            `);
+        return response.recordset;
+    } catch (error) {
+        throw error;
+    }
+};

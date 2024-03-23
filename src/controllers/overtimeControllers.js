@@ -1,4 +1,4 @@
-import { createNewOvertimeService, getEmployeeOvertimeService } from "../services/overtimeServices.js";
+import { createNewOvertimeService, getEmployeeOvertimeService, getOvertimeByIDService} from "../services/overtimeServices.js";
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError } from "../helpers/helperFunctions.js";
 import { getEmployeeByIDService } from "../services/userServices.js";
 
@@ -31,20 +31,39 @@ export const createNewOvertimeController = async (req, res) => {
             employeeID
         };
 
-        const user = await getEmployeeByIDService(employeeID);
+        const employee = await getEmployeeByIDService(employeeID);
 
-        if (!user || user.length === 0) {
+        // Check if user exists
+        if (!employee || employee.length === 0) {
             return sendNotFound(res, "Employee not found");
         }
 
         const response = await createNewOvertimeService(overtime);
 
         if (response.rowsAffected > 0) {
-            return sendCreated(res, `${user[0].firstname} (ID: ${employeeID}) overtime record has been added successfully`);
+            return sendCreated(res, `${employee[0].firstname} (${employeeID}) overtime record has been added successfully`);
+
         } else {
             return sendServerError(res, "Failed to create overtime record");
         }
     } catch (error) {
         return sendServerError(res, error.message);
+    }
+};
+
+
+
+export const getOvertimeByIDController = async (req, res) => {
+    try {
+        const { overtimeID } = req.params;
+        const overtimeRecord = await getOvertimeByIDService(overtimeID);
+
+        if (overtimeRecord.length > 0) {
+            return res.status(200).json(overtimeRecord[0]); 
+        } else {
+            sendNotFound(res, 'No overtime record found for the provided ID');
+        }
+    } catch (error) {
+        sendServerError(res, error.message);
     }
 };
