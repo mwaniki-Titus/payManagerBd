@@ -121,7 +121,6 @@ export const updateEmployeeService = async (employee, employeeID) => {
         .input("BankBranch", sql.VarChar, BankBranch)
         .input("AccountNumber", sql.VarChar, AccountNumber)
         .input("Bio", sql.VarChar, Bio)
-        // where Id is????????
         .query(
           `UPDATE Employees 
            SET FirstName= @FirstName, LastName= @LastName, Location= @Location, BirthDate= @BirthDate, Contact= @Contact, Gender= @Gender, admin= @admin, 

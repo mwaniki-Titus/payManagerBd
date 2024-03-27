@@ -15,8 +15,6 @@ export const addScheduleController = async (req, res) =>{
  
        
         const newSchedule = { InTime, OutTime, ScheduleName } 
-        // console.log(newPosition);
- 
         const response = await addScheduleService(newSchedule);
  
         if (response instanceof Error){
@@ -24,7 +22,7 @@ export const addScheduleController = async (req, res) =>{
         }
  
         if (response.rowsAffected && response.rowsAffected[0] === 1) {
-            // sendMail(newUser.Email);
+          
             sendCreated(res, "Schedule created successfully");
           } else {
             sendServerError(res, "Failed to create Schedule");

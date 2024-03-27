@@ -10,6 +10,8 @@ import cashAdvancesRouter from './src/routes/cashAdvanceRoutes.js'
 import overtimeRouter from './src/routes/overtimeRoutes.js'
 import scheduleRouter from './src/routes/scheduleRoutes.js'
 import attendanceRouter from './src/routes/attendanceRoutes.js'
+import payrollRouter from './src/routes/payrollRoutes.js'
+
 
 dotenv.config()
 
@@ -33,7 +35,7 @@ app.use('/api', deductionsRouter),
 app.use('/api', overtimeRouter),
 app.use('/api', scheduleRouter),
 app.use('/api', attendanceRouter),
-
+app.use('/api', payrollRouter)
 
 
 

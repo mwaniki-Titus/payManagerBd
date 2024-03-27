@@ -113,3 +113,25 @@ export const deletePositionService = async (positionID) => {
         return error;
     }
 }
+
+
+export const updatePositionService = async (position) => {
+    const { PositionID, Title, BasicSalary, OvertimeRate} = position;
+        //  console.log(employee)
+    try {
+      const result = await poolRequest()         
+        .input("PositionID", sql.Int, PositionID)
+        .input("Title", sql.VarChar, Title)
+        .input("BasicSalary", sql.VarChar, BasicSalary)
+        .input("OvertimeRate", sql.VarChar, OvertimeRate)
+        .query(
+          `UPDATE Positions 
+           SET Title= @Title, BasicSalary= @BasicSalary, OvertimeRate= @OvertimeRate
+           where PositionID =@PositionID`
+          );
+      return result;
+    } catch (error) {
+        console.error("Error updating position:", error);
+      return error;
+    }
+  };

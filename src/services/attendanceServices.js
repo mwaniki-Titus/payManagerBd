@@ -42,8 +42,6 @@ export const getAttendanceByIDService = async (attendanceID) =>{
 };
 
 
-//Add new Attendance
-
 export const addAttendanceService = async (newAttendance) => {
     try {
         const result = await poolRequest()
@@ -68,8 +66,6 @@ export const addAttendanceService = async (newAttendance) => {
 
 
 
-//delete
-
 export const deleteAttendanceService = async (attendanceID) => {
     try {
         const result = await poolRequest()
@@ -81,7 +77,7 @@ export const deleteAttendanceService = async (attendanceID) => {
     }
 }
 
-// Update
+
 export const updateAttendanceService = async (attendance) => {
     const { AttendanceID, EmployeeID, Date, ScheduleID, TimeIn, Hours} = attendance;
     try {

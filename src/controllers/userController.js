@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import logger from "../utils/logger.js";
+import nodemailer from 'nodemailer';
+
+
+
 import { addEmployeeService, deleteEmployeeService, getAllUserService, getEmployeeByIDService, getUserByEmailService, updateEmployeeService} from '../services/userServices.js';
 import { userLoginvalidator, validateNewEmployee } from '../validators/userValidators.js';
 import { sendBadRequest, sendDeleteSuccess, sendCreated,
@@ -52,9 +56,6 @@ export const getEmployeeByIDController = async (req, res) => {
     }
   };
   
-
-
-//Adding an Employee
 export const addEmployeeController = async (req, res) =>{
   const {
       FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
@@ -68,7 +69,6 @@ export const addEmployeeController = async (req, res) =>{
       });
 
       if (error){
-          // return res.status(400).send(error.details.message);
           return res.status(400).send(error.details[0].message);
       }
 
@@ -76,22 +76,18 @@ export const addEmployeeController = async (req, res) =>{
 
       if (existingUser) {
           return res.status(400).json({ error : "Employee already exists"});
-          // console.log("Use in the syste alredy");
       }
       
       const newEmployee = {
           FirstName, LastName, Location, BirthDate, Contact, Gender, admin, PositionID, ScheduleID, PhotoURL, Email, Password, BankName, BankBranch, AccountNumber, Bio 
       }
-      // console.log(newEmployee);
-
       const response = await addEmployeeService(newEmployee);
-
       if (response instanceof Error){
           throw response;
       }
 
       if (response.rowsAffected && response.rowsAffected[0] === 1) {
-          // sendMail(newUser.Email);
+         await sendMail(Email, FirstName, LastName, Password);
           sendCreated(res, "Employee created successfully");
         } else {
           sendServerError(res, "Failed to create Employee");
@@ -101,28 +97,57 @@ export const addEmployeeController = async (req, res) =>{
   }
 }
 
-
-//send Email
-export const sendMail = async (email) => {
+export const sendMail = async (Email, FirstName, LastName, Password) => {
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      service:"gmail",
       auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
+        user:process.env.EMAIL,
+        pass:process.env.PASSWORD,
       },
     });
+    const emailContent = `
+      <html>
+        <head>
+          <title>Welcome Pay Manager</title>
+          <!-- Add your custom styles here -->
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              margin: 0;
+              padding: 0;
+            }
+            /* Add more styles as needed */
+          </style>
+        </head>
+        <body>
+          <div>
+            <h1>Welcome to PayManager!</h1>
+            <p>Dear ${FirstName} ${LastName},</p>
+            <p>We are thrilled to welcome you to our platform. You are now part of our community!</p>
+            <p>Your login credentials:</p>
+            <p>Email: ${Email}</p>
+            <p>Password: ${Password}</p>
+            <p>You can now login to our platform using the provided credentials.</p>
+            <p>If you have any questions or need assistance, feel free to contact us at  </p>
+          </div>
+        </body>
+      </html>
+    `;
     const mailOptions = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: "Welcome !",
-      html: emailTemp,
+      from:process.env.EMAIL,
+      to:Email,
+      subject:"Welcome To PayManager !",
+      html:emailContent,
     };
     try {
       logger.info("Sending mail....");
       await transporter.sendMail(mailOptions);
       logger.info("Email sent successfully!");
     } catch (error) {
-      logger.error(error);
+      logger.error( error);
+      throw error;
+      
     }
   };
 

@@ -53,7 +53,7 @@ SELECT * FROM  Position
 CREATE TABLE Attendance (
     AttendanceID INT PRIMARY KEY IDENTITY(1,1),
     EmployeeID INT,
-    Date DATE,
+    Date DATETIME,
     ScheduleID INT,
     TimeIn VARCHAR(255),
     TimeOut VARCHAR(255),
@@ -184,6 +184,9 @@ CREATE TABLE Overtime (
 DROP TABLE  Overtime
 
 
+
+
+
 SELECT * FROM Overtime
 -- Inserting dummy data into the Overtime table
 INSERT INTO Overtime (NumberOfHours, RatePerHour, EmployeeID)
@@ -194,8 +197,20 @@ VALUES
 (6, 30.00, 4),
 (2, 15.00, 5);
 
+CREATE TABLE Payrolls (
+    PayrollID INT PRIMARY KEY IDENTITY(1,1),
+    PayrollDate DATE,
+    EmployeeID INT,
+    GrossPay DECIMAL(10, 2),
+    TotalDeductions DECIMAL(10, 2),
+    NetPay DECIMAL(10, 2),
+    -- Additional columns as needed
+    CONSTRAINT FK_EmployeeID FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
+);
 
+DROP TABLE Payrolls
 
+DROP TABLE Payrolls
 
  SELECT Position.*, Employees.*
         FROM Position
@@ -261,4 +276,20 @@ INNER JOIN
      firstname, lastname, other_columns, EmployeeID FROM Employee
       WHERE
        EmployeeID = @employeeID;
-            
+
+    DECLARE @EmployeeID INT = 12; 
+
+    SELECT Payrolls.*, Employees.*
+    FROM Payrolls
+    JOIN Employees ON Employees.EmployeeID = Payrolls.EmployeeID
+    WHERE Payrolls.EmployeeID = @EmployeeID;
+        
+          SELECT Payrolls.*, Employees.*
+       FROM Payrolls
+       JOIN Employees ON Employees.EmployeeID = Payrolls.EmployeeID
+
+
+         SELECT Position.*, Employees.*
+        FROM Position
+        INNER JOIN Employees ON Employees.PositionID = Position.PositionID
+      

@@ -3,10 +3,10 @@ GET http://localhost:8000/api/users/getAllUsers
 
 
 ###
-GET http://localhost:8000/api/users/getUserByID/1
+GET http://localhost:8000/api/users/getUserByID/12
 
 ###
-DELETE  http://localhost:8000/api/users/deleteEmployee/1
+DELETE  http://localhost:8000/api/users/deleteEmployee/13
 ###//add an employee
 
 POST http://localhost:8000/api/users/addNewEmployee
@@ -90,8 +90,8 @@ PATCH  http://localhost:8000/api/position/1
 Content-Type: application/json
 
 {
-  "PositionDescription": "Developer",
-  "GrossSalary": 7000
+  "PositionDescription": "Software Engineer",
+  "GrossSalary": 90000
 }
 
 
@@ -147,7 +147,7 @@ content-Type: application/json
 {
     "description":"Medical Insurance",
     "amount":100.50,
-    "employeeID":1
+    "employeeID":6
 }
 
 
@@ -171,7 +171,7 @@ content-Type: application/json
 
 
 ###
-GET http://localhost:8000/api/schedule/employee
+GET http://localhost:8000/api/schedule
 
 
 ###
@@ -186,7 +186,7 @@ content-Type: application/json
 {
   "InTime": "01:00:00", 
   "OutTime": "7:00:00",
-  "ScheduleName": "morning Shift"
+  "ScheduleName": "Night Shift"
 }
 
 ### 
@@ -201,7 +201,7 @@ content-Type: application/json
 
 
 ###
-DELETE  http://localhost:8000/api/schedule/remove/6
+DELETE  http://localhost:8000/api/schedule/remove/1009
 ### 
 
 
@@ -239,7 +239,7 @@ content-Type: application/json
 GET http://localhost:8000/api/attendance/getAll 
 
 ### get Attendance By ID.
-GET http://localhost:8000/api/attendance/getattendanceByID/14
+GET http://localhost:8000/api/attendance/getattendanceByID/12
 
 ### Delete Attendance .
 DELETE http://localhost:8000/api/attendance/deleteattendanceByID/4
@@ -264,10 +264,97 @@ PUT http://localhost:8000/api/attendance/editAttendance/6
 Content-Type: application/json
 
 {
-    "EmployeeID": 2,
+    "EmployeeID":12,
     "Date": "2024-03-18T00:00:00.000Z",
     "ScheduleID": 1,
-    "TimeIn": "1970-01-01T08:00:00.000Z",
+    "TimeIn": "2024-03-13T08:00:00.000Z",
     "TimeOut": "14:00:00.000Z",
     "Hours": "6"
+}
+
+
+
+#-------------Payrolls-----------
+
+### get all Payrolls
+GET http://localhost:8000/api/payroll/getAll
+
+
+
+### get Payrolls By Emp ID.
+GET http://localhost:8000/api/payroll/getpayrollByEmpID/12
+
+### Delete Payrolls .
+DELETE http://localhost:8000/api/payroll/deletepayrollByID/4
+
+
+### Add New payroll
+POST http://localhost:8000/api//payroll/addpayroll
+Content-Type: application/json
+
+{
+    "PayrollDate" : "2024-02-28",
+    "EmployeeID" :" 1",
+    "GrossPay" : "50000",
+    "TotalDeductions" : "3000",
+    "NetPay" : "52000"
+}
+
+### Update payroll
+PUT http://localhost:8000/api/payroll/UpdatepayrollByID/1
+Content-Type: application/json
+
+{
+    "PayrollDate": "2024-01-29",
+    "EmployeeID": 12,
+    "GrossPay": "54000",
+    "TotalDeductions": "5000",
+    "NetPay": "49000"
+}
+
+
+
+
+#-------------Overtime-----------
+
+### get all Overtime.
+GET http://localhost:8000/api/overtime/getAll
+
+
+### get Overtime By ID.
+GET http://localhost:8000/api/overtime/getovetimeByID/7
+
+
+
+### get Overtime By EmployeeID.
+GET http://localhost:8000/api/overtime/getovetimeByEmpID/1
+
+
+
+
+### Delete Overtime .
+DELETE http://localhost:8000/api/overtime/deleteOvetimeByID/7
+
+
+### aadd Overtime 
+#--------- Overtie should ! be add here rather On Attendance!!!!
+POST http://localhost:8000/api/overtime/addOvetime
+Content-Type: application/json
+
+{
+    "EmployeeID": 1,
+    "AttendanceID": 118,
+    "OvertimeHours": 5,
+    "OvertimeEarnings": 2000.00
+}
+
+
+### Update Overtime by Emp id
+PUT http://localhost:8000/api/overtime/updateOvetimeByEmpID/1
+Content-Type: application/json
+
+{
+    "AttendanceID": 118,
+    "OvertimeHours": 4,
+    "OvertimeEarnings": 2000.00
 }

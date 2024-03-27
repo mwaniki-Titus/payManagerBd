@@ -1,5 +1,5 @@
 import { sendBadRequest, sendCreated, sendNotFound, sendServerError, sendSuccess } from "../helpers/helperFunctions.js";
-import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, getPositionByNameService, deletePositionService } from "../services/positionServices.js";
+import { createNewPositionService, editPositionService, getAllPositionsService, getPositionByIdService, updatePositionService, getPositionByNameService, deletePositionService } from "../services/positionServices.js";
 import logger from "../utils/logger.js";
 
 
@@ -112,3 +112,43 @@ export const deletePosition = async (req, res) => {
         return sendServerError(res, error.message);
     }
 };
+
+
+
+export const updatePositionController = async (req, res) => {
+    try {
+      const positionID = Number(req.params.PositionID);
+      const exists = await checkPosition(req);
+
+      if (!exists){
+        return res.status(404).json({ message: "Position not found" });
+      }
+      
+      const positionData = await getPositionByIDService(positionID);
+      // console.log(employeeData)
+     
+      const updatedPositionData ={ ...positionData[0], ...req.body };
+      updatedPositionData.PositionID =positionID;
+      // console.log(employeeID)
+
+      if (checkIfValuesIsEmptyNullUndefined(req, res, req.body)) {
+            const {Title, BasicSalary, OvertimeRate } = req.body;
+            if (Title) {
+              updatedPositionData.Title = Title;
+            }
+            if (BasicSalary) {
+              updatedPositionData.BasicSalary = BasicSalary;
+            }
+            if (OvertimeRate) {
+              updatedPositionData.OvertimeRate = OvertimeRate;
+            }
+            const updatedPosition = await updatePositionService(updatedPositionData);
+            if (updatedPosition && updatedPosition.rowsAffected && updatedPosition.rowsAffected[0] > 0) {
+              return res.status(200).json({ message: "Position updated successfully" });
+            } else {
+              return res.status(500).json({ error: "Failed to update Position" });
+          }}
+        } catch (error) {
+          return res.status(500).json({ error: error.message });
+      }
+  }
