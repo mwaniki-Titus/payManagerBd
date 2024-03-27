@@ -80,7 +80,7 @@ POST http://localhost:8000/api/position/addPosition
 Content-Type: application/json
 
 {
-  "PositionDescription": " Web developer",
+  "PositionDescription": "ceo",
   "GrossSalary": 7000
 }
 
@@ -251,7 +251,7 @@ POST http://localhost:8000/api/attendance/addAttendance
 Content-Type: application/json
 
 {
-    "EmployeeID": 12,
+    "EmployeeID": 6,
     "Date": "2024-03-18",
     "ScheduleID": 1,
     "TimeIn": "08:00:AM",
