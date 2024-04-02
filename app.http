@@ -14,12 +14,12 @@ Content-Type: application/json
 
 {
     "FirstName": "John",
-    "LastName": "pop",
+    "LastName": "pal",
     "Location": "New York",
     "BirthDate": "1998-01-01",
     "Contact": "1234564508",
     "Gender": "male",
-    "admin": false,
+    "admin": true,
     "PositionID": 2,
     "ScheduleID": 1,
     "PhotoURL": "https://example.com/photo.jpg",
